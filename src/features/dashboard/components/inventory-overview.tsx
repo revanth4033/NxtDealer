@@ -2,9 +2,9 @@ import { SectionHeader } from '@/components/common/section-header'
 import { SectionLink } from '@/components/common/section-link'
 import { PageSection } from '@/components/layout/page-container'
 import { ROUTES } from '@/config/routes'
+import { DealerGarageTable } from '@/features/garage/components/dealer-garage-table'
 import type { Dealer, EntityId, GarageVehicle, InventoryTotals } from '@/types'
 
-import { DealerGarageTable } from './dealer-garage-table'
 import { DealerInventoryTable } from './dealer-inventory-table'
 
 interface InventoryOverviewProps {

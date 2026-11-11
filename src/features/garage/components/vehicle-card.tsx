@@ -1,6 +1,8 @@
 import { EntityAvatar } from '@/components/common/entity-avatar'
+import { StatusBadge } from '@/components/common/status-badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatKm, formatPriceShort, formatRelative } from '@/lib/format'
+import { MARKETPLACE_STATUS } from '@/config/status'
+import { formatDate, formatKm, formatPriceShort, formatRelative } from '@/lib/format'
 import type { MarketplaceVehicle } from '@/types'
 
 import { FUEL_LABELS, TRANSMISSION_LABELS } from '../vehicle-labels'
@@ -10,11 +12,18 @@ interface VehicleCardProps {
   vehicle: MarketplaceVehicle
   /** Show which dealer published the vehicle (platform view). */
   showDealer?: boolean
+  /**
+   * Add the vehicle's city under the dealer name. Where the marketplace will later attribute a listing
+   * to a showroom, this is the line that gains the showroom name.
+   */
+  showLocation?: boolean
+  /** Show the marketplace status badge on the photo. */
+  showStatus?: boolean
   onSelect: (vehicle: MarketplaceVehicle) => void
 }
 
 /** Marketplace vehicle summary. The whole card opens a read-only detail preview. */
-export function VehicleCard({ vehicle, showDealer = true, onSelect }: VehicleCardProps) {
+export function VehicleCard({ vehicle, showDealer = true, showLocation = false, showStatus = false, onSelect }: VehicleCardProps) {
   const { specs } = vehicle
 
   return (
@@ -34,6 +43,9 @@ export function VehicleCard({ vehicle, showDealer = true, onSelect }: VehicleCar
           <span className="absolute top-2.5 left-2.5 rounded-md bg-card/95 px-1.5 py-0.5 text-caption font-medium text-foreground tabular-nums shadow-card">
             {specs.year}
           </span>
+          {showStatus && (
+            <StatusBadge status={MARKETPLACE_STATUS[vehicle.marketplace.status]} className="absolute top-2.5 right-2.5 shadow-card" />
+          )}
         </div>
 
         <div className="flex flex-1 flex-col gap-3 p-4">
@@ -60,12 +72,19 @@ export function VehicleCard({ vehicle, showDealer = true, onSelect }: VehicleCar
         {showDealer ? (
           <>
             <EntityAvatar name={vehicle.dealerName} size="sm" />
-            <span className="min-w-0 flex-1 truncate text-caption font-medium text-foreground-secondary">{vehicle.dealerName}</span>
+            <span className="min-w-0 flex-1 leading-tight">
+              <span className="block truncate text-caption font-medium text-foreground-secondary">{vehicle.dealerName}</span>
+              {showLocation && <span className="block truncate text-caption text-muted-foreground">{vehicle.city}</span>}
+            </span>
           </>
         ) : (
           <span className="flex-1 truncate text-caption text-muted-foreground">{vehicle.city}</span>
         )}
-        <time dateTime={vehicle.marketplace.publishedAt} className="shrink-0 text-caption text-muted-foreground">
+        <time
+          dateTime={vehicle.marketplace.publishedAt}
+          title={`Published ${formatDate(vehicle.marketplace.publishedAt)}`}
+          className="shrink-0 text-caption text-muted-foreground"
+        >
           {formatRelative(vehicle.marketplace.publishedAt)}
         </time>
       </footer>

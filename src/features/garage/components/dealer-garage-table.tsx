@@ -9,11 +9,12 @@ import { createDataTableColumnHelper, DataTable } from '@/components/data-table'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MARKETPLACE_STATUS } from '@/config/status'
-import { VehicleImage } from '@/features/garage/components/vehicle-image'
-import { useGarageVehicles } from '@/features/garage/hooks/use-garage-vehicles'
-import { FUEL_LABELS, TRANSMISSION_LABELS } from '@/features/garage/vehicle-labels'
 import { formatDate, formatKm, formatNumber, formatPriceShort } from '@/lib/format'
 import type { Dealer, GarageSortField, GarageVehicle, InventoryTotals, MarketplaceStatus } from '@/types'
+
+import { useGarageVehicles } from '../hooks/use-garage-vehicles'
+import { FUEL_LABELS, TRANSMISSION_LABELS } from '../vehicle-labels'
+import { VehicleImage } from './vehicle-image'
 
 const PAGE_SIZE = 8
 const EMPTY: GarageVehicle[] = []
@@ -103,7 +104,7 @@ interface DealerGarageTableProps {
   onSelectVehicle: (vehicle: GarageVehicle) => void
 }
 
-/** The selected dealer's complete garage, published and unpublished. */
+/** One dealer's complete garage, published and unpublished. Used on the dashboard and the dealer details page. */
 export function DealerGarageTable({ dealer, totals, onSelectVehicle }: DealerGarageTableProps) {
   const [status, setStatus] = useState<StatusFilter>('all')
   const [search, setSearch] = useState('')
@@ -121,9 +122,11 @@ export function DealerGarageTable({ dealer, totals, onSelectVehicle }: DealerGar
     sortDirection: sort ? (sort.desc ? 'desc' : 'asc') : undefined,
   })
   const columns = useMemo(() => buildColumns(onSelectVehicle), [onSelectVehicle])
+  const total = vehicles.data?.total ?? 0
 
-  const tabs: { value: StatusFilter; label: string; count?: number }[] = [
-    { value: 'all', label: 'All vehicles', count: totals?.garageVehicles },
+  // `shortLabel` keeps all three tabs visible on phones.
+  const tabs: { value: StatusFilter; label: string; shortLabel?: string; count?: number }[] = [
+    { value: 'all', label: 'All vehicles', shortLabel: 'All', count: totals?.garageVehicles },
     { value: 'published', label: 'Published', count: totals?.marketplaceVehicles },
     { value: 'unpublished', label: 'Not published', count: totals?.unpublishedVehicles },
   ]
@@ -142,6 +145,7 @@ export function DealerGarageTable({ dealer, totals, onSelectVehicle }: DealerGar
       isRefreshing={vehicles.isFetching && vehicles.isPlaceholderData}
       sorting={sorting}
       onSortingChange={resetPage(setSorting)}
+      onRowClick={onSelectVehicle}
       skeletonRows={PAGE_SIZE}
       toolbar={
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -149,7 +153,14 @@ export function DealerGarageTable({ dealer, totals, onSelectVehicle }: DealerGar
             <TabsList variant="segment" aria-label="Filter by marketplace status">
               {tabs.map((tab) => (
                 <TabsTrigger key={tab.value} value={tab.value} className="gap-1.5">
-                  {tab.label}
+                  {tab.shortLabel ? (
+                    <>
+                      <span className="sm:hidden">{tab.shortLabel}</span>
+                      <span className="hidden sm:inline">{tab.label}</span>
+                    </>
+                  ) : (
+                    tab.label
+                  )}
                   {tab.count !== undefined && (
                     <span className="text-caption text-muted-foreground tabular-nums">{formatNumber(tab.count)}</span>
                   )}
@@ -199,8 +210,9 @@ export function DealerGarageTable({ dealer, totals, onSelectVehicle }: DealerGar
           />
         )
       }
+      // No records means nothing to page through: the empty state stands alone.
       footer={
-        <Pagination page={page} pageSize={PAGE_SIZE} total={vehicles.data?.total ?? 0} onPageChange={setPage} itemLabel="vehicles" />
+        total > 0 && <Pagination page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} itemLabel="vehicles" />
       }
     />
   )

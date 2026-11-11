@@ -1,0 +1,120 @@
+[
+ {
+  "key": "kia-seltos-red-b",
+  "baseSet": "kia-seltos-red",
+  "sources": [
+   {
+    "title": "File:Kia Seltos 2024 3.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Kia_Seltos_2024_3.jpg/500px-Kia_Seltos_2024_3.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Kia_Seltos_2024_3.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Ganesh Mohan T"
+   }
+  ]
+ },
+ {
+  "key": "kia-seltos-red-c",
+  "baseSet": "kia-seltos-red",
+  "sources": [
+   {
+    "title": "File:Kia Seltos car Htx model (cropped).jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Kia_Seltos_car_Htx_model_%28cropped%29.jpg/500px-Kia_Seltos_car_Htx_model_%28cropped%29.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Kia_Seltos_car_Htx_model_(cropped).jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Thesureshg"
+   }
+  ]
+ },
+ {
+  "key": "kia-seltos-grey-b",
+  "baseSet": "kia-seltos-grey",
+  "sources": [
+   {
+    "title": "File:2022 Kia Seltos (gray, front).jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/2022_Kia_Seltos_%28gray%2C_front%29.jpg/500px-2022_Kia_Seltos_%28gray%2C_front%29.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:2022_Kia_Seltos_(gray,_front).jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Ethan Llamas"
+   }
+  ]
+ },
+ {
+  "key": "toyota-innova-crysta-white-b",
+  "baseSet": "toyota-innova-crysta-white",
+  "sources": [
+   {
+    "title": "File:Toyota Innova Crysta 2.4 Z front right.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Toyota_Innova_Crysta_2.4_Z_front_right.jpg/500px-Toyota_Innova_Crysta_2.4_Z_front_right.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_front_right.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Premnath Kudva"
+   },
+   {
+    "title": "File:Toyota Innova Crysta 2.4 Z side.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Toyota_Innova_Crysta_2.4_Z_side.jpg/500px-Toyota_Innova_Crysta_2.4_Z_side.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_side.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Premnath Kudva"
+   },
+   {
+    "title": "File:Toyota Innova Crysta 2.4 Z rear left.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Toyota_Innova_Crysta_2.4_Z_rear_left.jpg/500px-Toyota_Innova_Crysta_2.4_Z_rear_left.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_rear_left.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Premnath Kudva"
+   }
+  ]
+ },
+ {
+  "key": "maruti-suzuki-xl6-white-b",
+  "baseSet": "maruti-suzuki-xl6-white",
+  "sources": [
+   {
+    "title": "File:Maruti Suzuki XL6 (side).jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Maruti_Suzuki_XL6_%28side%29.jpg/500px-Maruti_Suzuki_XL6_%28side%29.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_XL6_(side).jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Agratsa"
+   }
+  ]
+ },
+ {
+  "key": "honda-city-white-b",
+  "baseSet": "honda-city-white",
+  "sources": [
+   {
+    "title": "File:2024 Honda City 1.5 RS in Platinum White Pearl, rear left, 06-29-2024.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/2024_Honda_City_1.5_RS_in_Platinum_White_Pearl%2C_rear_left%2C_06-29-2024.jpg/500px-2024_Honda_City_1.5_RS_in_Platinum_White_Pearl%2C_rear_left%2C_06-29-2024.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:2024_Honda_City_1.5_RS_in_Platinum_White_Pearl,_rear_left,_06-29-2024.jpg",
+    "license": "CC0",
+    "artist": "Ethan Llamas"
+   }
+  ]
+ },
+ {
+  "key": "hyundai-i20-white-b",
+  "baseSet": "hyundai-i20-white",
+  "sources": [
+   {
+    "title": "File:Hyundai i20 (BC3) IMG 3552.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Hyundai_i20_%28BC3%29_IMG_3552.jpg/500px-Hyundai_i20_%28BC3%29_IMG_3552.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:Hyundai_i20_(BC3)_IMG_3552.jpg",
+    "license": "CC BY-SA 4.0",
+    "artist": "Alexander Migl"
+   }
+  ]
+ },
+ {
+  "key": "maruti-suzuki-ertiga-white-b",
+  "baseSet": "maruti-suzuki-ertiga-white",
+  "sources": [
+   {
+    "title": "File:2022 Maruti Suzuki Ertiga LXi.jpg",
+    "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/2022_Maruti_Suzuki_Ertiga_LXi.jpg/500px-2022_Maruti_Suzuki_Ertiga_LXi.jpg",
+    "page": "https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Ertiga_LXi.jpg",
+    "license": "Public domain",
+    "artist": "Ramakrishna Mission Vidyapith"
+   }
+  ]
+ }
+]

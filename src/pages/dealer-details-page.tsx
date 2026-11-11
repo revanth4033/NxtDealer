@@ -1,35 +1,49 @@
-import { ArrowLeft, UserSearch, Users } from 'lucide-react'
+import { ArrowLeft, UserSearch } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router'
 
 import { EmptyState } from '@/components/common/empty-state'
-import { ModulePlaceholder } from '@/components/common/module-placeholder'
-import { StatusBadge } from '@/components/common/status-badge'
-import { PageContainer } from '@/components/layout/page-container'
-import { PageHeader } from '@/components/layout/page-header'
+import { SectionHeader } from '@/components/common/section-header'
+import { PageContainer, PageSection } from '@/components/layout/page-container'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ROUTES } from '@/config/routes'
-import { DEALER_STATUS } from '@/config/status'
+import { DealerReelGallery } from '@/features/ai-reels/components/dealer-reel-gallery'
+import { ReelPreviewDialog } from '@/features/ai-reels/components/reel-preview-dialog'
+import { useDashboardSummary } from '@/features/dashboard/hooks/use-dashboard-summary'
+import { DealerActivityKpis } from '@/features/dealers/components/dealer-activity-kpis'
 import type { DealerDirectoryLinkState } from '@/features/dealers/components/dealer-directory-columns'
+import { DealerInformation } from '@/features/dealers/components/dealer-information'
+import { DealerProfileHeader } from '@/features/dealers/components/dealer-profile-header'
+import { DealerShowroom } from '@/features/dealers/components/dealer-showroom'
 import { useDealer } from '@/features/dealers/hooks/use-dealers'
-import { useDealerShowrooms } from '@/features/dealers/hooks/use-showrooms'
+import { DealerGarageTable } from '@/features/garage/components/dealer-garage-table'
+import { VehicleDetailSheet } from '@/features/garage/components/vehicle-detail-sheet'
+import { DealerMarketplaceListings } from '@/features/marketplace/components/dealer-marketplace-listings'
+import { usePageMeta } from '@/hooks/use-page-meta'
+import { formatNumber } from '@/lib/format'
 import { isApiError } from '@/services'
+import type { AiReel, Dealer, GarageVehicle } from '@/types'
+
+const plural = (count: number, one: string, many: string) => `${formatNumber(count)} ${count === 1 ? one : many}`
 
 /**
- * Placeholder for the individual dealer page (designed in the next phase).
- * Resolves the dealer from the URL and handles unknown ids; the full read-only profile comes later.
+ * One dealer's account, showroom, garage, marketplace listings and AI reels. Strictly read-only:
+ * the only interactions are navigation, filtering, search and previews.
  */
 export function DealerDetailsPage() {
   const { dealerId } = useParams()
   const location = useLocation()
   const dealer = useDealer(dealerId)
-  const showrooms = useDealerShowrooms(dealer.data?.id)
 
   // Return to the directory with the same search, filters, sort and page the admin left.
   const directorySearch = (location.state as DealerDirectoryLinkState | null)?.directorySearch ?? ''
+  const directoryPath = `${ROUTES.dealers}${directorySearch}`
+  usePageMeta({ title: dealer.data?.businessName, parentPath: directoryPath })
+
   const backLink = (
     <Button variant="ghost" asChild className="-ml-3 w-fit text-foreground-secondary">
-      <Link to={`${ROUTES.dealers}${directorySearch}`}>
+      <Link to={directoryPath}>
         <ArrowLeft /> All dealers
       </Link>
     </Button>
@@ -73,44 +87,88 @@ export function DealerDetailsPage() {
     return (
       <PageContainer>
         {backLink}
-        <div aria-busy className="flex flex-col gap-3 border-b pb-6">
-          <Skeleton className="h-7 w-64" />
-          <Skeleton className="h-5 w-80" />
+        <div aria-busy className="flex items-center gap-5 border-b pb-6">
+          <Skeleton className="size-14 rounded-xl" />
+          <div className="flex-1 space-y-2.5">
+            <Skeleton className="h-7 w-64" />
+            <Skeleton className="h-4 w-96 max-w-full" />
+          </div>
         </div>
-        <Skeleton className="h-56 w-full rounded-xl" />
+        <Skeleton className="h-36 w-full rounded-xl" />
       </PageContainer>
     )
   }
 
-  const { businessName, ownerName, location: dealerLocation, status, id } = dealer.data
-
   return (
     <PageContainer>
       {backLink}
-      <PageHeader
-        title={businessName}
-        meta={<StatusBadge status={DEALER_STATUS[status]} />}
-        description={`Owned by ${ownerName}, ${dealerLocation.city}, ${dealerLocation.state}. Dealer ID ${id}.`}
-      />
-      <ModulePlaceholder
-        icon={Users}
-        title="Dealer details"
-        description="A read-only view of this dealer’s account, showrooms and inventory is on the way."
-        plannedCapabilities={[
-          'Account details',
-          'Showrooms',
-          'Garage inventory',
-          'Marketplace vehicles',
-          'AI reels',
-          'Recent activity',
-        ]}
-        connection={{
-          entityLabel: showrooms.data?.length === 1 ? 'showroom' : 'showrooms',
-          count: showrooms.data?.length,
-          isLoading: showrooms.isPending,
-          isError: showrooms.isError,
+      <DealerDetails key={dealer.data.id} dealer={dealer.data} />
+    </PageContainer>
+  )
+}
+
+function DealerDetails({ dealer }: { dealer: Dealer }) {
+  const [vehicleId, setVehicleId] = useState<string | null>(null)
+  const [reel, setReel] = useState<AiReel | null>(null)
+  const selectVehicle = useCallback((vehicle: GarageVehicle) => setVehicleId(vehicle.id), [])
+
+  // Same analytics totals as the Dashboard's dealer scope, so both pages always agree.
+  const summary = useDashboardSummary(dealer.id)
+  const totals = summary.data?.totals
+
+  return (
+    <>
+      <DealerProfileHeader dealer={dealer} />
+      <DealerActivityKpis totals={totals} />
+
+      <div className="grid items-start gap-6 lg:gap-8 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <DealerInformation dealer={dealer} />
+        <DealerShowroom dealer={dealer} />
+      </div>
+
+      <PageSection labelledBy="dealer-garage">
+        <SectionHeader
+          id="dealer-garage"
+          title="Garage inventory"
+          description="Every vehicle in the dealer’s garage. Published vehicles also appear on the marketplace."
+        />
+        <DealerGarageTable dealer={dealer} totals={totals} onSelectVehicle={selectVehicle} />
+      </PageSection>
+
+      <PageSection labelledBy="dealer-marketplace">
+        <SectionHeader
+          id="dealer-marketplace"
+          title="Marketplace listings"
+          description="Vehicles from this garage that are currently published to the shared marketplace."
+          actions={
+            totals && (
+              <span className="text-caption text-muted-foreground tabular-nums">
+                {plural(totals.marketplaceVehicles, 'listing', 'listings')}
+              </span>
+            )
+          }
+        />
+        <DealerMarketplaceListings dealer={dealer} onSelectVehicle={selectVehicle} />
+      </PageSection>
+
+      <PageSection labelledBy="dealer-reels">
+        <SectionHeader
+          id="dealer-reels"
+          title="AI reels"
+          description="Promotional videos created by the dealer using vehicle photos."
+        />
+        <DealerReelGallery dealer={dealer} onPlayReel={setReel} />
+      </PageSection>
+
+      <VehicleDetailSheet vehicleId={vehicleId} onOpenChange={(open) => !open && setVehicleId(null)} onPlayReel={setReel} />
+      <ReelPreviewDialog
+        reel={reel}
+        onOpenChange={(open) => !open && setReel(null)}
+        onViewVehicle={(id) => {
+          setReel(null)
+          setVehicleId(id)
         }}
       />
-    </PageContainer>
+    </>
   )
 }

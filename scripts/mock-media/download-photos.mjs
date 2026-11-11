@@ -30,7 +30,7 @@ for (const [model, sets] of Object.entries(picks)) {
         const ratio = c.width / c.height
         const scaleArgs = ratio >= 4 / 3 ? ['--resampleHeight', '768'] : ['--resampleWidth', '1024']
         execFileSync('sips', [...scaleArgs, tmp, '--out', dest], { stdio: 'ignore' })
-        execFileSync('sips', ['--cropToHeightWidth', '768', '1024', '-s', 'formatOptions', '78', dest], { stdio: 'ignore' })
+        execFileSync('sips', ['--cropToHeightWidth', '768', '1024', '-s', 'formatOptions', 'low', dest], { stdio: 'ignore' })
         await new Promise((r) => setTimeout(r, 1000))
       }
       photos.push(`/mock-media/vehicles/${file}`)

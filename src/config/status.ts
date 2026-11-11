@@ -1,4 +1,4 @@
-import type { DealerPlan, DealerStatus, MarketplaceStatus } from '@/types'
+import type { DealerPlan, DealerStatus, MarketplaceStatus, ShowroomStatus } from '@/types'
 
 /** Visual tone of a status. Maps 1:1 to StatusBadge styles. */
 export type StatusTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info'
@@ -22,6 +22,12 @@ export const DEALER_PLAN: Record<DealerPlan, StatusMeta> = {
   free: { label: 'Free', tone: 'neutral' },
   growth: { label: 'Growth', tone: 'info' },
   pro: { label: 'Pro', tone: 'brand' },
+}
+
+/** A showroom's own status, independent of its dealer's account status. */
+export const SHOWROOM_STATUS: Record<ShowroomStatus, StatusMeta> = {
+  active: { label: 'Active', tone: 'success' },
+  suspended: { label: 'Suspended', tone: 'danger' },
 }
 
 /** Pink (brand) marks marketplace presence throughout the portal. */

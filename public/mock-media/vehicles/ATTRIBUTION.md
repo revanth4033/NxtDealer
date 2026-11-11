@@ -66,4 +66,21 @@ Used under the licence listed for each file.
 | maruti-suzuki-ertiga-silver-1.jpg | [Suzuki Ertiga NC FL 1.5 GLX Hybrid Snow White Pearl.jpg](https://commons.wikimedia.org/wiki/File:Suzuki_Ertiga_NC_FL_1.5_GLX_Hybrid_Snow_White_Pearl.jpg) | Ethan Llamas | CC BY-SA 4.0 |
 | kia-carens-white-1.jpg | [2022 Kia Carens 1.4 Luxury Plus (India) front view 01.jpg](https://commons.wikimedia.org/wiki/File:2022_Kia_Carens_1.4_Luxury_Plus_(India)_front_view_01.jpg) | Kannada DriveSpark | CC BY 3.0 |
 | kia-carens-grey-1.jpg | [Kia Carens 2024 Model 2.jpg](https://commons.wikimedia.org/wiki/File:Kia_Carens_2024_Model_2.jpg) | Ganesh Mohan T | CC BY-SA 4.0 |
-| maruti-suzuki-xl6-white-1.jpg | [Suzuki XL7 NC72S FL 1.5 GLX Hybrid Black Edition Arctic White Pearl.jpg](https://commons.wikimedia.org/wiki/File:Suzuki_XL7_NC72S_FL_1.5_GLX_Hybrid_Black_Edition_Arctic_White_Pearl.jpg) | Ethan Llamas | CC BY-SA 4.0 |
+| maruti-suzuki-xl6-white-1.jpg | [Maruti Suzuki XL6 (front).jpg](https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_XL6_(front).jpg) | Agratsa | CC BY-SA 4.0 |
+
+## Alternate photos
+
+Additional photos of the same model and colour, used so one dealer’s vehicles don’t share a cover photo.
+
+| File | Original | Author | Licence |
+| --- | --- | --- | --- |
+| kia-seltos-red-b-1.jpg | [Kia Seltos 2024 3.jpg](https://commons.wikimedia.org/wiki/File:Kia_Seltos_2024_3.jpg) | Ganesh Mohan T | CC BY-SA 4.0 |
+| kia-seltos-red-c-1.jpg | [Kia Seltos car Htx model (cropped).jpg](https://commons.wikimedia.org/wiki/File:Kia_Seltos_car_Htx_model_(cropped).jpg) | Thesureshg | CC BY-SA 4.0 |
+| kia-seltos-grey-b-1.jpg | [2022 Kia Seltos (gray, front).jpg](https://commons.wikimedia.org/wiki/File:2022_Kia_Seltos_(gray,_front).jpg) | Ethan Llamas | CC BY-SA 4.0 |
+| toyota-innova-crysta-white-b-1.jpg | [Toyota Innova Crysta 2.4 Z front right.jpg](https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_front_right.jpg) | Premnath Kudva | CC BY-SA 4.0 |
+| toyota-innova-crysta-white-b-2.jpg | [Toyota Innova Crysta 2.4 Z side.jpg](https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_side.jpg) | Premnath Kudva | CC BY-SA 4.0 |
+| toyota-innova-crysta-white-b-3.jpg | [Toyota Innova Crysta 2.4 Z rear left.jpg](https://commons.wikimedia.org/wiki/File:Toyota_Innova_Crysta_2.4_Z_rear_left.jpg) | Premnath Kudva | CC BY-SA 4.0 |
+| maruti-suzuki-xl6-white-b-1.jpg | [Maruti Suzuki XL6 (side).jpg](https://commons.wikimedia.org/wiki/File:Maruti_Suzuki_XL6_(side).jpg) | Agratsa | CC BY-SA 4.0 |
+| honda-city-white-b-1.jpg | [2024 Honda City 1.5 RS in Platinum White Pearl, rear left, 06-29-2024.jpg](https://commons.wikimedia.org/wiki/File:2024_Honda_City_1.5_RS_in_Platinum_White_Pearl,_rear_left,_06-29-2024.jpg) | Ethan Llamas | CC0 |
+| hyundai-i20-white-b-1.jpg | [Hyundai i20 (BC3) IMG 3552.jpg](https://commons.wikimedia.org/wiki/File:Hyundai_i20_(BC3)_IMG_3552.jpg) | Alexander Migl | CC BY-SA 4.0 |
+| maruti-suzuki-ertiga-white-b-1.jpg | [2022 Maruti Suzuki Ertiga LXi.jpg](https://commons.wikimedia.org/wiki/File:2022_Maruti_Suzuki_Ertiga_LXi.jpg) | Ramakrishna Mission Vidyapith | Public domain |

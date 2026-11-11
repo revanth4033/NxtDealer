@@ -97,6 +97,9 @@ mock services. The route is excluded from production builds.
 - **Vehicle photos** — 62 real photos of the catalogue models from Wikimedia Commons (CC licences; credits in
   `public/mock-media/vehicles/ATTRIBUTION.md`), centre-cropped to 1024×768. Grouped into colour sets in
   `src/mocks/vehicle-photos.ts`; a vehicle's colour always matches its photos.
+- **Alternate photos** — 10 more photos of the same models and colours (`src/mocks/vehicle-photo-alternates.ts`).
+  After the fixtures are generated, a display-only pass uses them so one dealer's vehicles don't share a
+  cover photo. It changes only `photos`, never which vehicles exist, are published or have reels.
 - **AI reels** — 9:16 H.264 MP4s (+ poster) rendered from each multi-photo set.
 
 Regenerating (`scripts/mock-media/`):
@@ -104,5 +107,6 @@ Regenerating (`scripts/mock-media/`):
 ```bash
 node scripts/mock-media/search-commons.mjs                 # find candidates → candidates.json
 node scripts/mock-media/download-photos.mjs "$PWD"         # download picks.json selections, crop, write credits
+node scripts/mock-media/download-alternate-photos.mjs "$PWD"  # alternate-picks.json → alternates + credits section
 swift scripts/mock-media/render-reels.swift "$PWD"         # render reels for sets in reel-sets.json (macOS)
 ```

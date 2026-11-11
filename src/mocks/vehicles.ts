@@ -1,6 +1,7 @@
 import type { AiReel, BodyType, DealerStatus, FuelType, GarageVehicle, Transmission } from '@/types'
 
 import { mockDealerProfiles } from './dealers'
+import { ALTERNATE_PHOTO_SETS, type AlternatePhotoSet } from './vehicle-photo-alternates'
 import { VEHICLE_PHOTO_SETS, type PhotoSet } from './vehicle-photos'
 
 /*
@@ -149,6 +150,36 @@ function planFor(dealerId: string, status: DealerStatus, random: ReturnType<type
 }
 
 const roundTo = (value: number, step: number) => Math.round(value / step) * step
+
+const ALTERNATES_BY_SET = new Map<string, AlternatePhotoSet[]>()
+for (const set of ALTERNATE_PHOTO_SETS) ALTERNATES_BY_SET.set(set.baseSet, [...(ALTERNATES_BY_SET.get(set.baseSet) ?? []), set])
+
+/** Every ordering of a photo list that starts at a different photo (the cover). */
+const rotations = (photos: readonly string[]) => photos.map((_, i) => [...photos.slice(i), ...photos.slice(0, i)])
+
+/**
+ * Display-only pass over one dealer's finished vehicles: where two vehicles would show the same cover
+ * photo, the later one gets another cover — first a different photo from its own colour set, then (if it
+ * has no reels, whose video is made from its set) an alternate set of the same model and colour.
+ * Only `photos` changes; which vehicles exist, are published or have reels was decided before this runs.
+ * Repeats remain only when a dealer has more cars of a model and colour than there are photos.
+ */
+function assignDistinctCovers(vehicles: GarageVehicle[], setByVehicle: ReadonlyMap<string, PhotoSet>) {
+  const usedCovers = new Set<string>()
+  // Vehicles with reels can only use their own set, so they choose first; the rest can fall back to alternates.
+  const byFlexibility = [...vehicles].sort((a, b) => Number(b.aiReelCount > 0) - Number(a.aiReelCount > 0))
+  for (const vehicle of byFlexibility) {
+    if (vehicle.photos.length === 0) continue
+    const set = setByVehicle.get(vehicle.id)!
+    const alternates = vehicle.aiReelCount === 0 ? (ALTERNATES_BY_SET.get(set.key) ?? []) : []
+    // The vehicle's current photos come first, so a cover only changes when it would repeat.
+    const options = [vehicle.photos, ...rotations(set.photos), ...alternates.flatMap((alternate) => rotations(alternate.photos))]
+    const distinct = options.find((photos) => !usedCovers.has(photos[0]))
+    if (distinct) vehicle.photos = distinct
+    usedCovers.add(vehicle.photos[0])
+  }
+}
+
 const iso = (time: number) => new Date(time).toISOString()
 
 function buildInventory() {
@@ -241,6 +272,7 @@ function buildInventory() {
       vehicle.aiReelCount = count
     })
 
+    assignDistinctCovers(dealerVehicles, photoSetByVehicle)
     vehicles.push(...dealerVehicles)
   })
 

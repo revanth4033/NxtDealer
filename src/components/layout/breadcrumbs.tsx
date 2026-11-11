@@ -3,11 +3,18 @@ import { Link } from 'react-router'
 
 import { ROUTES } from '@/config/routes'
 import { useBreadcrumbs } from '@/hooks/use-breadcrumbs'
+import { usePageMetaOverrides } from '@/hooks/use-page-meta'
 import { cn } from '@/lib/utils'
 
 /** Route-driven breadcrumb trail. The dashboard is home; the last crumb is the current page. */
 export function Breadcrumbs({ className }: { className?: string }) {
-  const crumbs = useBreadcrumbs()
+  const overrides = usePageMetaOverrides()
+  const crumbs = useBreadcrumbs().map((crumb, index, all) => {
+    // Pages can name the current crumb after loaded data (a dealer's name) and point the parent at a filtered list.
+    if (index === all.length - 1 && overrides.title) return { ...crumb, label: overrides.title }
+    if (index === all.length - 2 && overrides.parentPath) return { ...crumb, path: overrides.parentPath }
+    return crumb
+  })
   const isHome = crumbs.length === 1 && crumbs[0].path === ROUTES.dashboard
 
   return (

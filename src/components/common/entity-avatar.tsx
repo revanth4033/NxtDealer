@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 const SIZES = {
   sm: { root: 'size-6 rounded-md after:rounded-md', fallback: 'rounded-md text-[10px]' },
   md: { root: 'size-8 rounded-lg after:rounded-lg', fallback: 'rounded-lg text-caption' },
+  lg: { root: 'size-14 rounded-xl after:rounded-xl', fallback: 'rounded-xl text-lg' },
 } as const
 
 /** Square initials avatar for organisations such as dealers. */
