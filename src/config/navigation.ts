@@ -1,4 +1,5 @@
 import {
+  Blocks,
   LayoutDashboard,
   Settings,
   Sparkles,
@@ -53,6 +54,12 @@ export const NAV_ITEMS = {
     icon: Settings,
     description: 'Portal preferences, admin access and integrations.',
   },
+  uiKit: {
+    label: 'Component library',
+    path: ROUTES.uiKit,
+    icon: Blocks,
+    description: 'Reference for the shared components and patterns used across the portal.',
+  },
 } as const satisfies Record<string, NavItem>
 
 /** Primary sidebar navigation, grouped into sections. */
@@ -63,6 +70,8 @@ export const PRIMARY_NAV: NavSection[] = [
     label: 'Ecosystem',
     items: [NAV_ITEMS.dealers, NAV_ITEMS.marketplace, NAV_ITEMS.aiReels],
   },
+  // Development builds only — gives reviewers a direct way into the component library.
+  ...(import.meta.env.DEV ? [{ id: 'developer', label: 'Developer', items: [NAV_ITEMS.uiKit] }] : []),
 ]
 
 /** Navigation pinned to the bottom of the sidebar. */

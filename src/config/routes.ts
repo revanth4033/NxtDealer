@@ -6,6 +6,8 @@ export const ROUTES = {
   marketplace: '/marketplace',
   aiReels: '/ai-reels',
   settings: '/settings',
+  /** Development-only component reference. Not registered in production builds. */
+  uiKit: '/ui-kit',
 } as const
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES]

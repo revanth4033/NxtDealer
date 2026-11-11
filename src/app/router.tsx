@@ -48,6 +48,17 @@ export const router = createBrowserRouter([
         handle: handle(NAV_ITEMS.settings.label),
         lazy: async () => ({ Component: (await import('@/pages/settings-page')).SettingsPage }),
       },
+      // Development-only component library. `import.meta.env.DEV` (not env.isDev) lets the
+      // bundler statically remove this route and its chunk from production builds.
+      ...(import.meta.env.DEV
+        ? [
+            {
+              path: ROUTES.uiKit,
+              handle: handle(NAV_ITEMS.uiKit.label),
+              lazy: async () => ({ Component: (await import('@/pages/ui-kit/ui-kit-page')).UiKitPage }),
+            },
+          ]
+        : []),
       { path: '*', handle: handle('Page not found'), Component: NotFoundPage },
     ],
   },

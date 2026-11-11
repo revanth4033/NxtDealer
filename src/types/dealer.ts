@@ -33,5 +33,6 @@ export type DealerSortField = 'businessName' | 'joinedAt' | 'lastActiveAt' | 'ac
 
 export interface DealerListParams extends ListParams<DealerSortField> {
   status?: DealerStatus
-  plan?: DealerPlan
+  /** Matches dealers on any of the given plans. */
+  plans?: DealerPlan[]
 }

@@ -19,10 +19,12 @@ export function BrandMark({ className, compact = false }: BrandMarkProps) {
       >
         N
       </span>
-      {!compact && (
-        <span className="flex items-baseline gap-1.5">
+      {compact ? (
+        <span className="sr-only">NxtDealer Admin</span>
+      ) : (
+        <span className="flex flex-col leading-none">
           <span className="text-[15px] font-semibold tracking-tight text-foreground">NxtDealer</span>
-          <span className="text-overline uppercase text-muted-foreground">Admin</span>
+          <span className="mt-1 text-caption text-muted-foreground">Admin portal</span>
         </span>
       )}
     </div>

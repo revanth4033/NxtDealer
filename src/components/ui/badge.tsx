@@ -18,13 +18,6 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
-        // NxtDealer status variants — soft tinted backgrounds for data-dense UIs
-        brand: "bg-accent text-accent-foreground",
-        neutral: "bg-muted text-foreground-secondary",
-        success: "bg-success-soft text-success",
-        warning: "bg-warning-soft text-warning",
-        info: "bg-info-soft text-info",
-        danger: "bg-danger-soft text-destructive",
       },
     },
     defaultVariants: {

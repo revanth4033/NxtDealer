@@ -95,7 +95,8 @@
 
 /*
  * Type scale. Semantic sizes so hierarchy stays consistent across pages:
- * text-display › text-page-title › text-section-title › text-sm (body) › text-caption › text-overline
+ * text-display › text-page-title › text-section-title › text-sm (body) › text-caption
+ * text-metric is reserved for KPI figures.
  */
 @theme {
   --text-display: 1.875rem;
@@ -116,10 +117,19 @@
   --text-caption: 0.75rem;
   --text-caption--line-height: 1rem;
 
-  --text-overline: 0.6875rem;
-  --text-overline--line-height: 1rem;
-  --text-overline--letter-spacing: 0.06em;
-  --text-overline--font-weight: 600;
+  /* Large figures in KPI cards */
+  --text-metric: 1.75rem;
+  --text-metric--line-height: 2.125rem;
+  --text-metric--letter-spacing: -0.025em;
+  --text-metric--font-weight: 600;
+
+  /* Motion — short, ease-out; interactions should feel immediate */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The standard white container: cards, tables, panels. Use instead of re-declaring border/radius/shadow. */
+@utility surface {
+  @apply rounded-xl border border-border bg-card shadow-card;
 }
 
 @layer base {
@@ -142,5 +152,22 @@
   ::selection {
     background-color: var(--pink-100);
     color: var(--pink-700);
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }

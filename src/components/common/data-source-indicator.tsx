@@ -8,7 +8,7 @@ export function DataSourceIndicator({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        'inline-flex h-7 items-center gap-2 rounded-full border bg-background px-2.5 text-caption font-medium text-foreground-secondary',
+        'inline-flex h-7 items-center gap-2 rounded-full border bg-card px-2.5 text-caption font-medium text-foreground-secondary',
         className,
       )}
     >

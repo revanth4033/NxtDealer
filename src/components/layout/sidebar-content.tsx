@@ -2,6 +2,7 @@ import { BrandMark } from '@/components/common/brand-mark'
 import { PRIMARY_NAV, SECONDARY_NAV } from '@/config/navigation'
 
 import { SidebarNavLink } from './sidebar-nav-link'
+import { UserMenu } from './user-menu'
 
 interface SidebarContentProps {
   /** Called after a link is chosen — used by the mobile sheet to close itself. */
@@ -16,23 +17,34 @@ export function SidebarContent({ onNavigate }: SidebarContentProps) {
         <BrandMark />
       </div>
 
-      <nav aria-label="Primary" className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
+      <nav aria-label="Primary" className="flex-1 space-y-6 overflow-y-auto px-3 pt-5 pb-6">
         {PRIMARY_NAV.map((section) => (
-          <div key={section.id} className="space-y-1">
+          <div key={section.id} role="group" aria-labelledby={section.label ? `nav-${section.id}` : undefined}>
             {section.label && (
-              <p className="px-3 pb-1 text-overline uppercase text-muted-foreground">{section.label}</p>
+              <p id={`nav-${section.id}`} className="px-3 pb-2 text-caption font-medium text-muted-foreground">
+                {section.label}
+              </p>
             )}
-            {section.items.map((item) => (
-              <SidebarNavLink key={item.path} item={item} onNavigate={onNavigate} />
-            ))}
+            <ul className="space-y-0.5">
+              {section.items.map((item) => (
+                <li key={item.path}>
+                  <SidebarNavLink item={item} onNavigate={onNavigate} />
+                </li>
+              ))}
+            </ul>
           </div>
         ))}
       </nav>
 
-      <div className="shrink-0 space-y-1 border-t border-sidebar-border px-3 py-3">
-        {SECONDARY_NAV.map((item) => (
-          <SidebarNavLink key={item.path} item={item} onNavigate={onNavigate} />
-        ))}
+      <div className="shrink-0 space-y-2 border-t border-sidebar-border p-3">
+        <ul className="space-y-0.5">
+          {SECONDARY_NAV.map((item) => (
+            <li key={item.path}>
+              <SidebarNavLink item={item} onNavigate={onNavigate} />
+            </li>
+          ))}
+        </ul>
+        <UserMenu variant="sidebar" />
       </div>
     </div>
   )

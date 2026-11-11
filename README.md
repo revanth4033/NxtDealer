@@ -56,3 +56,24 @@ the contracts in `services/http/`, return them from `services/index.ts`, and set
 - Route paths only from `ROUTES`; nav labels/icons only from `NAV_ITEMS`.
 - Colors only through semantic tokens (`bg-card`, `text-foreground-secondary`, `text-primary`) — no raw hex in components.
 - Type scale: `text-display`, `text-page-title`, `text-section-title`, `text-sm` (body), `text-caption`, `text-overline`.
+
+## Design system
+
+Tokens live in `src/styles/tokens.css`; Tailwind utilities are mapped in `src/styles/globals.css`.
+Pink (`primary`) is reserved for primary actions, the active nav item, focus and selected states.
+
+| Need                     | Use                                                         |
+| ------------------------ | ----------------------------------------------------------- |
+| Page title + actions     | `PageHeader` (pass a line `TabsList` as children for views) |
+| Block heading in a page  | `SectionHeader` inside `PageSection`                        |
+| KPI tile                 | `StatCard` / `StatCardSkeleton`                             |
+| Domain status            | `StatusBadge` + maps in `config/status.ts`                  |
+| List of records          | `DataTable` + `createDataTableColumnHelper`, `Pagination`   |
+| Search / filter          | `SearchInput`, `FilterDropdown` (single or multiple)        |
+| View switching           | `Tabs` — `line` (page level) or `segment` (in a section)    |
+| Nothing to show / failed | `EmptyState` (`empty`, `no-results`, `error`)               |
+| Waiting                  | Skeletons first; `LoadingState` / `Spinner` otherwise       |
+| List state in the URL    | `useUrlState` (see `pages/ui-kit/use-dealer-table-state.ts`) |
+
+In development, **Developer → Component library** (`/ui-kit`) shows every component wired to the
+mock services. The route is excluded from production builds.

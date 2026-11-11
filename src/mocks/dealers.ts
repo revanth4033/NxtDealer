@@ -1,6 +1,7 @@
 import type { Dealer } from '@/types'
 
-export const mockDealers: Dealer[] = [
+/** Hand-written dealers that other fixtures (listings, reels) reference by id. */
+const curatedDealers: Dealer[] = [
   {
     id: 'dlr_1001',
     businessName: 'Sai Krishna Motors',
@@ -122,3 +123,65 @@ export const mockDealers: Dealer[] = [
     lastActiveAt: '2026-11-11T03:30:00.000Z',
   },
 ]
+
+/*
+ * Additional generated dealers so lists, pagination and filters have realistic volume.
+ * Deterministic (no Math.random) so the UI is stable between reloads.
+ */
+const GENERATED_DEALER_SEED = [
+  ['Speedway Autos', 'Nikhil Reddy', 'Visakhapatnam', 'Andhra Pradesh'],
+  ['Lakeview Motors', 'Priya Nair', 'Kochi', 'Kerala'],
+  ['Highway Car Mart', 'Amit Verma', 'Lucknow', 'Uttar Pradesh'],
+  ['Pearl City Cars', 'Imran Khan', 'Hyderabad', 'Telangana'],
+  ['Sunrise Automobiles', 'Deepa Kulkarni', 'Nagpur', 'Maharashtra'],
+  ['Heritage Motors', 'Arjun Mehta', 'Ahmedabad', 'Gujarat'],
+  ['Garden City Wheels', 'Lakshmi Prasad', 'Bengaluru', 'Karnataka'],
+  ['Northern Drive', 'Gurdeep Kaur', 'Chandigarh', 'Punjab'],
+  ['Marina Auto Hub', 'Senthil Kumar', 'Chennai', 'Tamil Nadu'],
+  ['Blue Ridge Cars', 'Rohan Das', 'Guwahati', 'Assam'],
+  ['Silverline Motors', 'Kavya Shetty', 'Mangaluru', 'Karnataka'],
+  ['Deccan Car Point', 'Farhan Ali', 'Hyderabad', 'Telangana'],
+  ['Indore Auto Plaza', 'Sneha Jain', 'Indore', 'Madhya Pradesh'],
+  ['Konark Motors', 'Bikash Patnaik', 'Bhubaneswar', 'Odisha'],
+  ['Twin City Autos', 'Ravi Teja', 'Vijayawada', 'Andhra Pradesh'],
+  ['Valley View Cars', 'Ayesha Mir', 'Srinagar', 'Jammu and Kashmir'],
+  ['Ganga Auto World', 'Vikas Pandey', 'Varanasi', 'Uttar Pradesh'],
+  ['Pink City Motors', 'Rajat Saxena', 'Jaipur', 'Rajasthan'],
+] as const
+
+const STATUSES: Dealer['status'][] = ['active', 'active', 'active', 'pending', 'active', 'inactive', 'active', 'suspended']
+const PLANS: Dealer['plan'][] = ['growth', 'free', 'pro', 'growth', 'free']
+const VERIFICATION: Record<Dealer['status'], Dealer['verificationStatus']> = {
+  active: 'verified',
+  pending: 'in_review',
+  inactive: 'unverified',
+  suspended: 'rejected',
+}
+
+const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
+
+const generatedDealers: Dealer[] = GENERATED_DEALER_SEED.map(
+  ([businessName, ownerName, city, state], index): Dealer => {
+    const status = STATUSES[index % STATUSES.length]
+    const isActive = status === 'active'
+    const joined = new Date(Date.UTC(2025, (index * 5) % 12, 3 + ((index * 7) % 24), 9, 0))
+    const lastActive = new Date(Date.UTC(2026, 10, 11 - (index % 9), 6 + (index % 8), 15))
+    return {
+      id: `dlr_${1101 + index}`,
+      businessName,
+      ownerName,
+      email: `${slug(ownerName.split(' ')[0])}@${slug(businessName)}.in`,
+      phone: `+91 9${String(8000000000 + index * 7919113).slice(0, 4)} ${String(10000 + index * 3571).slice(0, 5)}`,
+      location: { city, state },
+      status,
+      plan: PLANS[index % PLANS.length],
+      verificationStatus: VERIFICATION[status],
+      activeListings: isActive ? 8 + ((index * 13) % 46) : (index % 3),
+      reelsGenerated: isActive ? 5 + ((index * 17) % 90) : (index % 4),
+      joinedAt: joined.toISOString(),
+      lastActiveAt: lastActive.toISOString(),
+    }
+  },
+)
+
+export const mockDealers: Dealer[] = [...curatedDealers, ...generatedDealers]
