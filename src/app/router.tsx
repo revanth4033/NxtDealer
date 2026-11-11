@@ -31,7 +31,17 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.dealers,
         handle: handle(NAV_ITEMS.dealers.label),
-        lazy: async () => ({ Component: (await import('@/pages/dealers-page')).DealersPage }),
+        children: [
+          {
+            index: true,
+            lazy: async () => ({ Component: (await import('@/pages/dealers-page')).DealersPage }),
+          },
+          {
+            path: ROUTES.dealerDetails,
+            handle: handle('Dealer details'),
+            lazy: async () => ({ Component: (await import('@/pages/dealer-details-page')).DealerDetailsPage }),
+          },
+        ],
       },
       {
         path: ROUTES.marketplace,

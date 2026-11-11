@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { StatusBadge } from '@/components/common/status-badge'
-import { DEALER_PLAN, DEALER_STATUS, DEALER_VERIFICATION } from '@/config/status'
+import { DEALER_PLAN, DEALER_STATUS } from '@/config/status'
 import { formatDate, formatRelative } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import type { Dealer } from '@/types'
@@ -9,7 +9,6 @@ import type { Dealer } from '@/types'
 /** Compact account summary used alongside KPI cards when a single dealer is in focus. */
 export function DealerProfileCard({ dealer, className }: { dealer: Dealer; className?: string }) {
   const rows: [string, ReactNode][] = [
-    ['Verification', <StatusBadge key="v" status={DEALER_VERIFICATION[dealer.verificationStatus]} />],
     ['Joined', formatDate(dealer.joinedAt)],
     ['Last active', formatRelative(dealer.lastActiveAt)],
   ]

@@ -1,5 +1,6 @@
 export type * from './common'
 export type * from './dealer'
+export type * from './showroom'
 export type * from './vehicle'
 export type * from './ai-reel'
 export type * from './analytics'

@@ -17,6 +17,10 @@ export const queryKeys = {
     list: (params: DealerListParams = {}) => ['dealers', 'list', params] as const,
     detail: (id: EntityId) => ['dealers', 'detail', id] as const,
   },
+  showrooms: {
+    all: ['showrooms'] as const,
+    byDealer: (dealerId: EntityId) => ['showrooms', 'by-dealer', dealerId] as const,
+  },
   garage: {
     all: ['garage'] as const,
     list: (params: GarageListParams = {}) => ['garage', 'list', params] as const,

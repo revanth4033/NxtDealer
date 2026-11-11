@@ -6,9 +6,11 @@ import { mockDealerService } from './mock-dealer-service'
 import { mockGarageService } from './mock-garage-service'
 import { mockMarketplaceService } from './mock-marketplace-service'
 import { mockSessionService } from './mock-session-service'
+import { mockShowroomService } from './mock-showroom-service'
 
 export const mockServices: AppServices = {
   dealers: mockDealerService,
+  showrooms: mockShowroomService,
   garage: mockGarageService,
   marketplace: mockMarketplaceService,
   aiReels: mockAiReelService,

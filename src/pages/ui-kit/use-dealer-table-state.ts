@@ -33,7 +33,7 @@ export function useDealerTableState() {
   // A fresh object per render is fine: TanStack Query hashes query keys structurally.
   const params: DealerListParams = {
     search: search || undefined,
-    status,
+    statuses: status ? [status] : undefined,
     plans: plans.length ? plans : undefined,
     page,
     pageSize,

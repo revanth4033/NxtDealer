@@ -1,10 +1,12 @@
 import type { EntityId, ISODateString, ListParams } from './common'
 
-export type DealerStatus = 'active' | 'pending' | 'suspended' | 'inactive'
+/**
+ * Account status. Dealers are onboarded directly when they join NxtDealer (there is no approval or
+ * verification step), so an account is either active or suspended.
+ */
+export type DealerStatus = 'active' | 'suspended'
 
 export type DealerPlan = 'free' | 'growth' | 'pro'
-
-export type DealerVerificationStatus = 'verified' | 'in_review' | 'unverified' | 'rejected'
 
 export interface DealerLocation {
   city: string
@@ -20,7 +22,6 @@ export interface Dealer {
   location: DealerLocation
   status: DealerStatus
   plan: DealerPlan
-  verificationStatus: DealerVerificationStatus
   /** Counts computed by the service from garage, marketplace and reel records. */
   stats: DealerInventoryStats
   joinedAt: ISODateString
@@ -36,14 +37,15 @@ export interface DealerInventoryStats {
 
 export type DealerSortField =
   | 'businessName'
+  | 'city'
   | 'joinedAt'
   | 'lastActiveAt'
   | 'garageVehicles'
   | 'marketplaceVehicles'
   | 'aiReels'
 
+/** Each filter matches dealers with any of the given values; omitted or empty means no filter. */
 export interface DealerListParams extends ListParams<DealerSortField> {
-  status?: DealerStatus
-  /** Matches dealers on any of the given plans. */
+  statuses?: DealerStatus[]
   plans?: DealerPlan[]
 }

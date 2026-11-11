@@ -1,4 +1,4 @@
-import type { AiReel, BodyType, FuelType, GarageVehicle, Transmission } from '@/types'
+import type { AiReel, BodyType, DealerStatus, FuelType, GarageVehicle, Transmission } from '@/types'
 
 import { mockDealerProfiles } from './dealers'
 import { VEHICLE_PHOTO_SETS, type PhotoSet } from './vehicle-photos'
@@ -97,8 +97,8 @@ function createPhotoAssigner() {
 }
 
 /**
- * How much inventory each dealer has. Explicit plans cover the scenarios the dashboard must handle;
- * other dealers are derived from their status.
+ * How much inventory each dealer has. Explicit plans and garage-only scenarios cover the cases the
+ * dashboard must handle; other dealers are derived from their account status.
  *   garage: vehicles in the garage · published: of those, on the marketplace
  *   reelVehicles: vehicles with reels · maxReels: most reels on a single vehicle
  */
@@ -112,26 +112,39 @@ interface InventoryPlan {
 const EXPLICIT_PLANS: Record<string, InventoryPlan> = {
   dlr_1001: { garage: 34, published: 18, reelVehicles: 7, maxReels: 3 }, // large garage, multiple reels per vehicle
   dlr_1002: { garage: 16, published: 9, reelVehicles: 0, maxReels: 0 }, // active, publishes, never made a reel
-  dlr_1003: { garage: 5, published: 0, reelVehicles: 0, maxReels: 0 }, // pending: garage only
+  dlr_1003: { garage: 5, published: 0, reelVehicles: 0, maxReels: 0 }, // joined recently: garage only, nothing published yet
   dlr_1004: { garage: 46, published: 22, reelVehicles: 9, maxReels: 3 }, // largest garage
   dlr_1005: { garage: 12, published: 0, reelVehicles: 2, maxReels: 2 }, // suspended: delisted, old reels remain
   dlr_1006: { garage: 21, published: 11, reelVehicles: 4, maxReels: 2 },
-  dlr_1007: { garage: 3, published: 0, reelVehicles: 0, maxReels: 0 }, // inactive
+  dlr_1007: { garage: 3, published: 0, reelVehicles: 0, maxReels: 0 }, // small garage, not using the marketplace
   dlr_1008: { garage: 28, published: 15, reelVehicles: 6, maxReels: 2 },
   dlr_1110: { garage: 0, published: 0, reelVehicles: 0, maxReels: 0 }, // joined, nothing added yet
 }
 
-function planFor(dealerId: string, status: string, random: ReturnType<typeof createRandom>): InventoryPlan {
+/**
+ * Active dealers who keep vehicles in their garage but have nothing on the marketplace. These are
+ * inventory scenarios, not account statuses: "starter" has a small garage and no reels yet,
+ * "lapsed" has a modest garage and at most an old reel.
+ */
+const GARAGE_ONLY: Record<string, 'starter' | 'lapsed'> = {
+  dlr_1104: 'starter',
+  dlr_1106: 'lapsed',
+  dlr_1112: 'starter',
+  dlr_1114: 'lapsed',
+}
+
+function planFor(dealerId: string, status: DealerStatus, random: ReturnType<typeof createRandom>): InventoryPlan {
   const explicit = EXPLICIT_PLANS[dealerId]
   if (explicit) return explicit
-  if (status === 'active') {
+  const garageOnly = GARAGE_ONLY[dealerId]
+  if (garageOnly === 'starter') return { garage: random.int(1, 4), published: 0, reelVehicles: 0, maxReels: 0 }
+  if (status === 'active' && !garageOnly) {
     const garage = random.int(6, 22)
     const published = Math.round(garage * (0.3 + random.next() * 0.4))
     const reelVehicles = random.next() < 0.25 ? 0 : random.int(1, Math.min(5, garage))
     return { garage, published, reelVehicles, maxReels: 2 }
   }
-  if (status === 'pending') return { garage: random.int(1, 4), published: 0, reelVehicles: 0, maxReels: 0 }
-  // Suspended and inactive dealers keep their garage, but nothing stays on the marketplace.
+  // Suspended (and lapsed) dealers keep their garage, but nothing stays on the marketplace.
   return { garage: random.int(2, 8), published: 0, reelVehicles: random.int(0, 1), maxReels: 1 }
 }
 

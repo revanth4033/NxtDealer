@@ -7,8 +7,8 @@ import { SectionHeader } from '@/components/common/section-header'
 import { PageSection } from '@/components/layout/page-container'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { DEALER_VERIFICATION, MARKETPLACE_STATUS, toOptions } from '@/config/status'
-import type { DealerVerificationStatus, MarketplaceStatus } from '@/types'
+import { DEALER_PLAN, MARKETPLACE_STATUS, toOptions } from '@/config/status'
+import type { DealerPlan, MarketplaceStatus } from '@/types'
 
 /** Interactive input components. Each demo reflects its current value so behaviour is verifiable. */
 export function InputsSection() {
@@ -83,7 +83,7 @@ function ButtonsDemo() {
 
 function SearchAndFiltersDemo() {
   const [query, setQuery] = useState('')
-  const [statuses, setStatuses] = useState<DealerVerificationStatus[]>(['verified'])
+  const [plans, setPlans] = useState<DealerPlan[]>(['pro'])
   const [marketplace, setMarketplace] = useState<MarketplaceStatus | undefined>()
 
   return (
@@ -99,10 +99,10 @@ function SearchAndFiltersDemo() {
             <SearchInput value={query} onValueChange={setQuery} placeholder="Search vehicles" />
             <FilterDropdown
               mode="multiple"
-              label="Verification"
-              options={toOptions(DEALER_VERIFICATION)}
-              value={statuses}
-              onValueChange={setStatuses}
+              label="Plan"
+              options={toOptions(DEALER_PLAN)}
+              value={plans}
+              onValueChange={setPlans}
             />
             <FilterDropdown
               mode="single"
@@ -114,7 +114,7 @@ function SearchAndFiltersDemo() {
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1">
             <ValueReadout label="Committed search" value={query ? `“${query}”` : 'none'} />
-            <ValueReadout label="Verification" value={statuses.length ? statuses.join(', ') : 'any'} />
+            <ValueReadout label="Plan" value={plans.length ? plans.join(', ') : 'any'} />
             <ValueReadout label="Marketplace" value={marketplace ?? 'any'} />
           </div>
         </div>

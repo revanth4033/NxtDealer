@@ -1,4 +1,4 @@
-import type { DealerPlan, DealerStatus, DealerVerificationStatus, MarketplaceStatus } from '@/types'
+import type { DealerPlan, DealerStatus, MarketplaceStatus } from '@/types'
 
 /** Visual tone of a status. Maps 1:1 to StatusBadge styles. */
 export type StatusTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info'
@@ -15,16 +15,7 @@ export interface StatusMeta {
 
 export const DEALER_STATUS: Record<DealerStatus, StatusMeta> = {
   active: { label: 'Active', tone: 'success' },
-  pending: { label: 'Pending', tone: 'warning' },
   suspended: { label: 'Suspended', tone: 'danger' },
-  inactive: { label: 'Inactive', tone: 'neutral' },
-}
-
-export const DEALER_VERIFICATION: Record<DealerVerificationStatus, StatusMeta> = {
-  verified: { label: 'Verified', tone: 'success' },
-  in_review: { label: 'In review', tone: 'info' },
-  unverified: { label: 'Unverified', tone: 'neutral' },
-  rejected: { label: 'Rejected', tone: 'danger' },
 }
 
 export const DEALER_PLAN: Record<DealerPlan, StatusMeta> = {

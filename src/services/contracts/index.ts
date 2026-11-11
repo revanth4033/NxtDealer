@@ -4,8 +4,17 @@ import type { DealerService } from './dealer-service'
 import type { GarageService } from './garage-service'
 import type { MarketplaceService } from './marketplace-service'
 import type { SessionService } from './session-service'
+import type { ShowroomService } from './showroom-service'
 
-export type { AiReelService, AnalyticsService, DealerService, GarageService, MarketplaceService, SessionService }
+export type {
+  AiReelService,
+  AnalyticsService,
+  DealerService,
+  GarageService,
+  MarketplaceService,
+  SessionService,
+  ShowroomService,
+}
 
 /**
  * The complete set of data services the UI depends on.
@@ -14,6 +23,7 @@ export type { AiReelService, AnalyticsService, DealerService, GarageService, Mar
  */
 export interface AppServices {
   dealers: DealerService
+  showrooms: ShowroomService
   garage: GarageService
   marketplace: MarketplaceService
   aiReels: AiReelService

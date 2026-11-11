@@ -19,7 +19,7 @@ export const mockAnalyticsService: AnalyticsService = {
       return { scope: { type: 'dealer', dealerId }, totals: computeTotals(vehicles, reelVehicleIds), generatedAt }
     }
 
-    const byStatus: Record<DealerStatus, number> = { active: 0, pending: 0, suspended: 0, inactive: 0 }
+    const byStatus: Record<DealerStatus, number> = { active: 0, suspended: 0 }
     mockDealers.forEach((dealer) => byStatus[dealer.status]++)
 
     return {

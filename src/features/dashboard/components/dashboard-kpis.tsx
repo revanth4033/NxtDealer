@@ -76,10 +76,7 @@ export function DashboardKpis({ summary, dealer, isLoading }: DashboardKpisProps
                     <span className="font-medium text-success">{summary.dealers.byStatus.active}</span> active
                   </span>
                   <span>
-                    <span className="font-medium text-warning">{summary.dealers.byStatus.pending}</span> pending
-                  </span>
-                  <span>
-                    {summary.dealers.byStatus.suspended + summary.dealers.byStatus.inactive} inactive or suspended
+                    <span className="font-medium text-destructive">{summary.dealers.byStatus.suspended}</span> suspended
                   </span>
                 </span>
               )

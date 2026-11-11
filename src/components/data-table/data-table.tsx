@@ -1,6 +1,6 @@
 import { useTable, type RowData, type SortingState } from '@tanstack/react-table'
 import { ArrowDown, ArrowUp, ChevronsUpDown } from 'lucide-react'
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -29,12 +29,24 @@ interface DataTableProps<TData extends RowData> {
   toolbar?: ReactNode
   /** Slot below the table, typically Pagination. */
   footer?: ReactNode
+  /**
+   * Makes whole rows clickable, e.g. to open a details page. Mouse convenience only: also render a
+   * link or button inside the row for keyboard and screen-reader users. Clicks on interactive
+   * elements inside the row, and clicks that end a text selection, are ignored.
+   */
+  onRowClick?: (row: TData) => void
   className?: string
 }
 
 const NO_SORTING: SortingState = []
 
 const ALIGN_CLASS = { left: 'text-left', right: 'text-right', center: 'text-center' } as const
+
+function handleRowClick(event: MouseEvent<HTMLTableRowElement>, open: () => void) {
+  if ((event.target as HTMLElement).closest('a, button, input, [role="menuitem"]')) return
+  if (window.getSelection()?.toString()) return
+  open()
+}
 
 /**
  * Data table surface: toolbar, sortable headers, loading skeleton, empty state and footer.
@@ -53,6 +65,7 @@ export function DataTable<TData extends RowData>({
   skeletonRows = 8,
   toolbar,
   footer,
+  onRowClick,
   className,
 }: DataTableProps<TData>) {
   const table = useTable({
@@ -138,7 +151,11 @@ export function DataTable<TData extends RowData>({
                 </TableRow>
               ))
             : rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  onClick={onRowClick ? (event) => handleRowClick(event, () => onRowClick(row.original)) : undefined}
+                  className={cn(onRowClick && 'group/row cursor-pointer')}
+                >
                   {row.getAllCells().map((cell) => {
                     const meta = cell.column.columnDef.meta
                     return (

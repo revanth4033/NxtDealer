@@ -14,7 +14,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'Hyderabad', state: 'Telangana' },
     status: 'active',
     plan: 'pro',
-    verificationStatus: 'verified',
     joinedAt: '2025-03-14T09:20:00.000Z',
     lastActiveAt: '2026-11-11T05:42:00.000Z',
   },
@@ -27,7 +26,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'Bengaluru', state: 'Karnataka' },
     status: 'active',
     plan: 'growth',
-    verificationStatus: 'verified',
     joinedAt: '2025-06-02T11:05:00.000Z',
     lastActiveAt: '2026-11-10T16:18:00.000Z',
   },
@@ -38,9 +36,8 @@ const curatedDealers: DealerProfile[] = [
     email: 'rahul@shreeganeshauto.in',
     phone: '+91 98220 77801',
     location: { city: 'Pune', state: 'Maharashtra' },
-    status: 'pending',
+    status: 'active',
     plan: 'free',
-    verificationStatus: 'in_review',
     joinedAt: '2026-10-28T07:45:00.000Z',
     lastActiveAt: '2026-11-09T10:02:00.000Z',
   },
@@ -53,7 +50,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'New Delhi', state: 'Delhi' },
     status: 'active',
     plan: 'pro',
-    verificationStatus: 'verified',
     joinedAt: '2024-11-20T08:30:00.000Z',
     lastActiveAt: '2026-11-11T04:10:00.000Z',
   },
@@ -66,7 +62,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'Panaji', state: 'Goa' },
     status: 'suspended',
     plan: 'growth',
-    verificationStatus: 'rejected',
     joinedAt: '2025-09-09T12:00:00.000Z',
     lastActiveAt: '2026-09-30T14:25:00.000Z',
   },
@@ -79,7 +74,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'Chennai', state: 'Tamil Nadu' },
     status: 'active',
     plan: 'growth',
-    verificationStatus: 'verified',
     joinedAt: '2025-12-15T06:40:00.000Z',
     lastActiveAt: '2026-11-10T09:55:00.000Z',
   },
@@ -90,9 +84,8 @@ const curatedDealers: DealerProfile[] = [
     email: 'meera@royaldrive.in',
     phone: '+91 98290 31877',
     location: { city: 'Jaipur', state: 'Rajasthan' },
-    status: 'inactive',
+    status: 'active',
     plan: 'free',
-    verificationStatus: 'unverified',
     joinedAt: '2026-04-03T10:15:00.000Z',
     lastActiveAt: '2026-06-18T08:00:00.000Z',
   },
@@ -105,7 +98,6 @@ const curatedDealers: DealerProfile[] = [
     location: { city: 'Kolkata', state: 'West Bengal' },
     status: 'active',
     plan: 'pro',
-    verificationStatus: 'verified',
     joinedAt: '2025-01-27T09:00:00.000Z',
     lastActiveAt: '2026-11-11T03:30:00.000Z',
   },
@@ -136,20 +128,15 @@ const GENERATED_DEALER_SEED = [
   ['Pink City Motors', 'Rajat Saxena', 'Jaipur', 'Rajasthan'],
 ] as const
 
-const STATUSES: Dealer['status'][] = ['active', 'active', 'active', 'pending', 'active', 'inactive', 'active', 'suspended']
+/** Every eighth generated dealer is suspended; the rest are active. */
+const statusFor = (index: number): Dealer['status'] => (index % 8 === 7 ? 'suspended' : 'active')
 const PLANS: Dealer['plan'][] = ['growth', 'free', 'pro', 'growth', 'free']
-const VERIFICATION: Record<Dealer['status'], Dealer['verificationStatus']> = {
-  active: 'verified',
-  pending: 'in_review',
-  inactive: 'unverified',
-  suspended: 'rejected',
-}
 
 const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
 
 const generatedDealers: DealerProfile[] = GENERATED_DEALER_SEED.map(
   ([businessName, ownerName, city, state], index): DealerProfile => {
-    const status = STATUSES[index % STATUSES.length]
+    const status = statusFor(index)
     const joined = new Date(Date.UTC(2025, (index * 5) % 12, 3 + ((index * 7) % 24), 9, 0))
     const lastActive = new Date(Date.UTC(2026, 10, 10 - (index % 9), 6 + (index % 8), 15))
     return {
@@ -161,7 +148,6 @@ const generatedDealers: DealerProfile[] = GENERATED_DEALER_SEED.map(
       location: { city, state },
       status,
       plan: PLANS[index % PLANS.length],
-      verificationStatus: VERIFICATION[status],
       joinedAt: joined.toISOString(),
       lastActiveAt: lastActive.toISOString(),
     }

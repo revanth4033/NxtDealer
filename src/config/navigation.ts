@@ -34,7 +34,7 @@ export const NAV_ITEMS = {
     label: 'Dealers',
     path: ROUTES.dealers,
     icon: Users,
-    description: 'Onboarding, verification and activity of registered dealers.',
+    description: 'Monitor registered dealers and their activity across NxtDealer.',
   },
   marketplace: {
     label: 'Marketplace',
