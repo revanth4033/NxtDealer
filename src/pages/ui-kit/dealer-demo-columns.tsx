@@ -1,8 +1,8 @@
 import { Copy, Mail, MoreHorizontal } from 'lucide-react'
 
+import { EntityAvatar } from '@/components/common/entity-avatar'
 import { StatusBadge } from '@/components/common/status-badge'
 import { createDataTableColumnHelper } from '@/components/data-table'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { DEALER_PLAN, DEALER_STATUS } from '@/config/status'
-import { formatDate, formatDateTime, formatNumber, getInitials } from '@/lib/format'
+import { formatDate, formatDateTime, formatNumber } from '@/lib/format'
 import type { Dealer } from '@/types'
 
 const column = createDataTableColumnHelper<Dealer>()
@@ -24,11 +24,7 @@ export function createDealerColumns(onCopy: (text: string, confirmation: string)
       header: 'Dealer',
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
-          <Avatar className="size-8 rounded-lg after:rounded-lg">
-            <AvatarFallback className="rounded-lg bg-muted text-caption font-semibold text-foreground-secondary">
-              {getInitials(row.original.businessName)}
-            </AvatarFallback>
-          </Avatar>
+          <EntityAvatar name={row.original.businessName} />
           <div className="min-w-0 leading-tight">
             <p className="truncate font-medium text-foreground">{row.original.businessName}</p>
             <p className="truncate text-caption text-muted-foreground">{row.original.ownerName}</p>
@@ -61,8 +57,9 @@ export function createDealerColumns(onCopy: (text: string, confirmation: string)
       cell: ({ getValue }) => <StatusBadge status={DEALER_PLAN[getValue()]} hideDot />,
       meta: { className: 'w-[10%]' },
     }),
-    column.accessor('activeListings', {
-      header: 'Listings',
+    column.accessor((dealer) => dealer.stats.garageVehicles, {
+      id: 'garageVehicles',
+      header: 'Vehicles',
       cell: ({ getValue }) => formatNumber(getValue()),
       meta: { align: 'right', className: 'w-[9%]' },
     }),

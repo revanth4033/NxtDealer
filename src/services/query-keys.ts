@@ -1,4 +1,11 @@
-import type { AiReelListParams, DealerListParams, EntityId, ListingListParams } from '@/types'
+import type {
+  AiReelListParams,
+  DashboardSummaryParams,
+  DealerListParams,
+  EntityId,
+  GarageListParams,
+  MarketplaceListParams,
+} from '@/types'
 
 /**
  * Centralised TanStack Query keys. Hierarchical so whole domains can be
@@ -10,10 +17,14 @@ export const queryKeys = {
     list: (params: DealerListParams = {}) => ['dealers', 'list', params] as const,
     detail: (id: EntityId) => ['dealers', 'detail', id] as const,
   },
-  listings: {
-    all: ['listings'] as const,
-    list: (params: ListingListParams = {}) => ['listings', 'list', params] as const,
-    detail: (id: EntityId) => ['listings', 'detail', id] as const,
+  garage: {
+    all: ['garage'] as const,
+    list: (params: GarageListParams = {}) => ['garage', 'list', params] as const,
+    detail: (id: EntityId) => ['garage', 'detail', id] as const,
+  },
+  marketplace: {
+    all: ['marketplace'] as const,
+    list: (params: MarketplaceListParams = {}) => ['marketplace', 'list', params] as const,
   },
   aiReels: {
     all: ['ai-reels'] as const,
@@ -21,7 +32,7 @@ export const queryKeys = {
     detail: (id: EntityId) => ['ai-reels', 'detail', id] as const,
   },
   analytics: {
-    dashboardSummary: ['analytics', 'dashboard-summary'] as const,
+    dashboardSummary: (params: DashboardSummaryParams = {}) => ['analytics', 'dashboard-summary', params] as const,
   },
   session: {
     currentAdmin: ['session', 'current-admin'] as const,

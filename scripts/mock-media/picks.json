@@ -1,0 +1,23 @@
+{
+ "Maruti Suzuki Swift": [["blue","Speedy Blue",[0]],["red","Fire Red",[8]],["white","Pearl Arctic White",[3]]],
+ "Maruti Suzuki Baleno": [["grey","Granite Grey",[4]],["silver","Splendid Silver",[9]],["white","Arctic White",[11]]],
+ "Hyundai i20": [["white","Polar White",[6,2]],["red","Fiery Red",[1]]],
+ "Tata Altroz": [["white","Avenue White",[2,5]]],
+ "Volkswagen Polo": [["red","Flash Red",[7,11]],["grey","Carbon Steel Grey",[2]]],
+ "Honda City": [["white","Platinum White",[0,11]],["grey","Meteoroid Grey",[4]]],
+ "Hyundai Verna": [["white","Polar White",[1,2]],["grey","Titan Grey",[0]]],
+ "Maruti Suzuki Ciaz": [["silver","Nexa Silver",[7,13]],["maroon","Opulent Red",[5]],["white","Pearl White",[1]]],
+ "Skoda Slavia": [["grey","Carbon Steel",[0]]],
+ "Maruti Suzuki Dzire": [["silver","Magma Grey",[12,13]],["blue","Oxford Blue",[10]],["bronze","Sherwood Brown",[11]]],
+ "Hyundai Creta": [["white","Atlas White",[5,8]],["blue","Denim Blue",[11]]],
+ "Kia Seltos": [["red","Intense Red",[6,11]],["blue","Intelligency Blue",[0]],["grey","Gravity Grey",[4]]],
+ "Tata Nexon": [["darkblue","Midnight Blue",[1,2]],["red","Flame Red",[0]],["blue","Calgary Blue",[3]],["white","Pristine White",[9]]],
+ "Mahindra XUV700": [["black","Midnight Black",[0]],["white","Everest White",[1]]],
+ "Toyota Fortuner": [["white","White Pearl",[1,0]],["silver","Silver Metallic",[2]]],
+ "Maruti Suzuki Brezza": [["blue","Pearl Blue",[2,1]],["grey","Magma Grey",[5]],["white","Pearl White",[6]]],
+ "Kia Sonet": [["darkgrey","Gravity Grey",[4,12]],["grey","Steel Silver",[0]],["red","Intense Red",[7]],["blue","Imperial Blue",[5]]],
+ "Toyota Innova Crysta": [["white","Super White",[0]]],
+ "Maruti Suzuki Ertiga": [["white","Pearl Arctic White",[5,11]],["silver","Splendid Silver",[8]]],
+ "Kia Carens": [["white","Glacier White",[1]],["grey","Gravity Grey",[7]]],
+ "Maruti Suzuki XL6": [["white","Arctic White",[6]]]
+}

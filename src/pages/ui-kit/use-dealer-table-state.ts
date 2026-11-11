@@ -4,7 +4,7 @@ import { DEALER_PLAN, DEALER_STATUS } from '@/config/status'
 import { useUrlState } from '@/hooks/use-url-state'
 import type { DealerListParams, DealerPlan, DealerSortField, DealerStatus } from '@/types'
 
-const SORT_FIELDS: DealerSortField[] = ['businessName', 'joinedAt', 'lastActiveAt', 'activeListings']
+const SORT_FIELDS: DealerSortField[] = ['businessName', 'joinedAt', 'lastActiveAt', 'garageVehicles']
 export const PAGE_SIZE_OPTIONS = [5, 10, 20]
 const DEFAULT_PAGE_SIZE = 10
 

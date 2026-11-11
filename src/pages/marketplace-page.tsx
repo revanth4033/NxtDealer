@@ -2,12 +2,12 @@ import { ModulePlaceholder } from '@/components/common/module-placeholder'
 import { PageContainer } from '@/components/layout/page-container'
 import { PageHeader } from '@/components/layout/page-header'
 import { NAV_ITEMS } from '@/config/navigation'
-import { useListings } from '@/features/marketplace/hooks/use-listings'
+import { useMarketplaceVehicles } from '@/features/marketplace/hooks/use-marketplace-vehicles'
 
 const { label, description, icon } = NAV_ITEMS.marketplace
 
 export function MarketplacePage() {
-  const listings = useListings()
+  const listings = useMarketplaceVehicles()
 
   return (
     <PageContainer>
@@ -25,7 +25,7 @@ export function MarketplacePage() {
           'Flagged content review',
         ]}
         connection={{
-          entityLabel: 'listings',
+          entityLabel: 'published vehicles',
           count: listings.data?.total,
           isLoading: listings.isPending,
           isError: listings.isError,

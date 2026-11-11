@@ -1,0 +1,100 @@
+[
+ {
+  "key": "hyundai-i20-white",
+  "photos": [
+   "/mock-media/vehicles/hyundai-i20-white-1.jpg",
+   "/mock-media/vehicles/hyundai-i20-white-2.jpg"
+  ]
+ },
+ {
+  "key": "tata-altroz-white",
+  "photos": [
+   "/mock-media/vehicles/tata-altroz-white-1.jpg",
+   "/mock-media/vehicles/tata-altroz-white-2.jpg"
+  ]
+ },
+ {
+  "key": "volkswagen-polo-red",
+  "photos": [
+   "/mock-media/vehicles/volkswagen-polo-red-1.jpg",
+   "/mock-media/vehicles/volkswagen-polo-red-2.jpg"
+  ]
+ },
+ {
+  "key": "honda-city-white",
+  "photos": [
+   "/mock-media/vehicles/honda-city-white-1.jpg",
+   "/mock-media/vehicles/honda-city-white-2.jpg"
+  ]
+ },
+ {
+  "key": "hyundai-verna-white",
+  "photos": [
+   "/mock-media/vehicles/hyundai-verna-white-1.jpg",
+   "/mock-media/vehicles/hyundai-verna-white-2.jpg"
+  ]
+ },
+ {
+  "key": "maruti-suzuki-ciaz-silver",
+  "photos": [
+   "/mock-media/vehicles/maruti-suzuki-ciaz-silver-1.jpg",
+   "/mock-media/vehicles/maruti-suzuki-ciaz-silver-2.jpg"
+  ]
+ },
+ {
+  "key": "maruti-suzuki-dzire-silver",
+  "photos": [
+   "/mock-media/vehicles/maruti-suzuki-dzire-silver-1.jpg",
+   "/mock-media/vehicles/maruti-suzuki-dzire-silver-2.jpg"
+  ]
+ },
+ {
+  "key": "hyundai-creta-white",
+  "photos": [
+   "/mock-media/vehicles/hyundai-creta-white-1.jpg",
+   "/mock-media/vehicles/hyundai-creta-white-2.jpg"
+  ]
+ },
+ {
+  "key": "kia-seltos-red",
+  "photos": [
+   "/mock-media/vehicles/kia-seltos-red-1.jpg",
+   "/mock-media/vehicles/kia-seltos-red-2.jpg"
+  ]
+ },
+ {
+  "key": "tata-nexon-darkblue",
+  "photos": [
+   "/mock-media/vehicles/tata-nexon-darkblue-1.jpg",
+   "/mock-media/vehicles/tata-nexon-darkblue-2.jpg"
+  ]
+ },
+ {
+  "key": "toyota-fortuner-white",
+  "photos": [
+   "/mock-media/vehicles/toyota-fortuner-white-1.jpg",
+   "/mock-media/vehicles/toyota-fortuner-white-2.jpg"
+  ]
+ },
+ {
+  "key": "maruti-suzuki-brezza-blue",
+  "photos": [
+   "/mock-media/vehicles/maruti-suzuki-brezza-blue-1.jpg",
+   "/mock-media/vehicles/maruti-suzuki-brezza-blue-2.jpg"
+  ]
+ },
+ {
+  "key": "kia-sonet-darkgrey",
+  "photos": [
+   "/mock-media/vehicles/kia-sonet-darkgrey-1.jpg",
+   "/mock-media/vehicles/kia-sonet-darkgrey-2.jpg"
+  ]
+ },
+ {
+  "key": "maruti-suzuki-ertiga-white",
+  "photos": [
+   "/mock-media/vehicles/maruti-suzuki-ertiga-white-1.jpg",
+   "/mock-media/vehicles/maruti-suzuki-ertiga-white-2.jpg"
+  ]
+ }
+]

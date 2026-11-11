@@ -1,4 +1,4 @@
-import { CheckCircle2, Megaphone, Sparkles, Store, Users } from 'lucide-react'
+import { CheckCircle2, Store, Users } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 
 import { EmptyState } from '@/components/common/empty-state'
@@ -12,22 +12,13 @@ import { PageSection } from '@/components/layout/page-container'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { DEALER_PLAN, DEALER_STATUS, toOptions } from '@/config/status'
-import { useDashboardSummary } from '@/features/dashboard/hooks/use-dashboard-summary'
 import { useDealers } from '@/features/dealers/hooks/use-dealers'
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'
 import { formatNumber } from '@/lib/format'
-import type { DealerStatus, MetricKey } from '@/types'
+import type { DealerStatus } from '@/types'
 
 import { createDealerColumns } from './dealer-demo-columns'
 import { PAGE_SIZE_OPTIONS, useDealerTableState } from './use-dealer-table-state'
-
-const METRIC_ICONS: Record<MetricKey, typeof Users> = {
-  totalDealers: Users,
-  activeDealers: CheckCircle2,
-  liveListings: Store,
-  reelsGenerated: Sparkles,
-  marketplaceLeads: Megaphone,
-}
 
 const EMPTY: never[] = []
 
@@ -46,30 +37,24 @@ export function DataDisplaySection() {
 }
 
 function StatCardsDemo() {
-  const summary = useDashboardSummary()
-
   return (
     <PageSection labelledBy="kit-stat-cards">
       <SectionHeader
         id="kit-stat-cards"
         title="Stat cards"
-        description="KPI figure, change against the previous period, and a 12-period trend. Live from the analytics mock service."
+        description="Headline figure with one line of context from real data. Use the meter only for a genuine part-of-whole."
       />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {summary.isPending
-          ? Array.from({ length: 4 }, (_, i) => <StatCardSkeleton key={i} />)
-          : summary.data?.metrics.slice(0, 4).map((metric) => (
-              <StatCard
-                key={metric.key}
-                label={metric.label}
-                value={formatNumber(metric.value)}
-                icon={METRIC_ICONS[metric.key]}
-                changeRatio={metric.changeRatio}
-                betterWhen={metric.betterWhen}
-                comparisonLabel="vs last 30 days"
-                trend={metric.trend}
-              />
-            ))}
+        <StatCard label="Plain" value={formatNumber(26)} icon={Users} />
+        <StatCard label="With context" value={formatNumber(312)} icon={Store} context="Across 25 dealer garages" />
+        <StatCard
+          label="With meter"
+          value={formatNumber(141)}
+          icon={CheckCircle2}
+          context="Of 312 garage vehicles"
+          meter={{ value: 141, max: 312, label: '45% published' }}
+        />
+        <StatCardSkeleton />
       </div>
     </PageSection>
   )

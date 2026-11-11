@@ -1,60 +1,37 @@
-import { mockAiReels } from '@/mocks/ai-reels'
-import { mockDealers } from '@/mocks/dealers'
-import { mockListings } from '@/mocks/listings'
+import { mockAiReels, mockVehicles } from '@/mocks/vehicles'
+import { ApiError } from '@/services/errors'
 import type { AnalyticsService } from '@/services/contracts'
-import type { MetricSnapshot } from '@/types'
+import type { DealerStatus } from '@/types'
 
+import { computeTotals, mockDealers } from './mock-inventory'
 import { simulateLatency } from './mock-utils'
 
-/** Deterministic 12-period series that ends at `current` and reflects `changeRatio`. */
-function buildTrend(current: number, changeRatio: number): number[] {
-  const start = current / (1 + changeRatio)
-  return Array.from({ length: 12 }, (_, i) => {
-    const progress = i / 11
-    const wobble = Math.sin(i * 1.3) * 0.025 * Math.max(start, current)
-    const value = start + (current - start) * progress + (i === 11 ? 0 : wobble)
-    return Math.max(0, Math.round(value * 10) / 10)
-  })
-}
-
-/** Derives dashboard metrics from the fixtures so numbers stay internally consistent. */
+/** Totals are always computed from records — marketplace vehicles are a subset of garage vehicles, never added to them. */
 export const mockAnalyticsService: AnalyticsService = {
-  async getDashboardSummary() {
+  async getDashboardSummary({ dealerId } = {}) {
     await simulateLatency()
-    const metrics: Omit<MetricSnapshot, 'trend'>[] = [
-      { key: 'totalDealers', label: 'Total dealers', value: mockDealers.length, format: 'number', changeRatio: 0.083 },
-      {
-        key: 'activeDealers',
-        label: 'Active dealers',
-        value: mockDealers.filter((d) => d.status === 'active').length,
-        format: 'number',
-        changeRatio: 0.041,
-      },
-      {
-        key: 'liveListings',
-        label: 'Live listings',
-        value: mockListings.filter((l) => l.status === 'live').length,
-        format: 'number',
-        changeRatio: 0.126,
-      },
-      {
-        key: 'reelsGenerated',
-        label: 'AI reels generated',
-        value: mockAiReels.filter((r) => r.status === 'completed').length,
-        format: 'number',
-        changeRatio: 0.214,
-      },
-      {
-        key: 'marketplaceLeads',
-        label: 'Marketplace leads',
-        value: mockListings.reduce((sum, l) => sum + l.leads, 0),
-        format: 'number',
-        changeRatio: -0.032,
-      },
-    ]
+    const generatedAt = new Date().toISOString()
+
+    if (dealerId) {
+      if (!mockDealers.some((dealer) => dealer.id === dealerId)) throw ApiError.notFound('Dealer', dealerId)
+      const vehicles = mockVehicles.filter((vehicle) => vehicle.dealerId === dealerId)
+      const reelVehicleIds = mockAiReels.filter((reel) => reel.dealerId === dealerId).map((reel) => reel.vehicleId)
+      return { scope: { type: 'dealer', dealerId }, totals: computeTotals(vehicles, reelVehicleIds), generatedAt }
+    }
+
+    const byStatus: Record<DealerStatus, number> = { active: 0, pending: 0, suspended: 0, inactive: 0 }
+    mockDealers.forEach((dealer) => byStatus[dealer.status]++)
+
     return {
-      generatedAt: new Date().toISOString(),
-      metrics: metrics.map((metric) => ({ ...metric, trend: buildTrend(metric.value, metric.changeRatio) })),
+      scope: { type: 'platform' },
+      totals: computeTotals(mockVehicles, mockAiReels.map((reel) => reel.vehicleId)),
+      dealers: {
+        total: mockDealers.length,
+        byStatus,
+        withGarageVehicles: mockDealers.filter((dealer) => dealer.stats.garageVehicles > 0).length,
+        withMarketplaceVehicles: mockDealers.filter((dealer) => dealer.stats.marketplaceVehicles > 0).length,
+      },
+      generatedAt,
     }
   },
 }

@@ -54,6 +54,7 @@ export const NAV_ITEMS = {
     icon: Settings,
     description: 'Portal preferences, admin access and integrations.',
   },
+  /** Development-only route (see app/router.tsx). Deliberately not part of PRIMARY_NAV or SECONDARY_NAV. */
   uiKit: {
     label: 'Component library',
     path: ROUTES.uiKit,
@@ -70,8 +71,6 @@ export const PRIMARY_NAV: NavSection[] = [
     label: 'Ecosystem',
     items: [NAV_ITEMS.dealers, NAV_ITEMS.marketplace, NAV_ITEMS.aiReels],
   },
-  // Development builds only — gives reviewers a direct way into the component library.
-  ...(import.meta.env.DEV ? [{ id: 'developer', label: 'Developer', items: [NAV_ITEMS.uiKit] }] : []),
 ]
 
 /** Navigation pinned to the bottom of the sidebar. */

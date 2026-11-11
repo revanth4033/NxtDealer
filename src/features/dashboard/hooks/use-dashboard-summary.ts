@@ -1,10 +1,14 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { queryKeys, services } from '@/services'
+import type { EntityId } from '@/types'
 
-export function useDashboardSummary() {
+/** Platform totals, or a single dealer's totals when `dealerId` is set. */
+export function useDashboardSummary(dealerId?: EntityId) {
+  const params = dealerId ? { dealerId } : {}
   return useQuery({
-    queryKey: queryKeys.analytics.dashboardSummary,
-    queryFn: () => services.analytics.getDashboardSummary(),
+    queryKey: queryKeys.analytics.dashboardSummary(params),
+    queryFn: () => services.analytics.getDashboardSummary(params),
+    placeholderData: keepPreviousData,
   })
 }

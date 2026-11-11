@@ -1,15 +1,17 @@
-import { mockDealers } from '@/mocks/dealers'
 import { ApiError } from '@/services/errors'
 import type { DealerService } from '@/services/contracts'
 import type { Dealer, DealerSortField } from '@/types'
 
+import { mockDealers } from './mock-inventory'
 import { clone, queryCollection, simulateLatency } from './mock-utils'
 
 const sortAccessors: Record<DealerSortField, (dealer: Dealer) => string | number> = {
   businessName: (d) => d.businessName,
   joinedAt: (d) => d.joinedAt,
   lastActiveAt: (d) => d.lastActiveAt,
-  activeListings: (d) => d.activeListings,
+  garageVehicles: (d) => d.stats.garageVehicles,
+  marketplaceVehicles: (d) => d.stats.marketplaceVehicles,
+  aiReels: (d) => d.stats.aiReels,
 }
 
 export const mockDealerService: DealerService = {

@@ -1,0 +1,90 @@
+import { EntityAvatar } from '@/components/common/entity-avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { formatKm, formatPriceShort, formatRelative } from '@/lib/format'
+import type { MarketplaceVehicle } from '@/types'
+
+import { FUEL_LABELS, TRANSMISSION_LABELS } from '../vehicle-labels'
+import { VehicleImage } from './vehicle-image'
+
+interface VehicleCardProps {
+  vehicle: MarketplaceVehicle
+  /** Show which dealer published the vehicle (platform view). */
+  showDealer?: boolean
+  onSelect: (vehicle: MarketplaceVehicle) => void
+}
+
+/** Marketplace vehicle summary. The whole card opens a read-only detail preview. */
+export function VehicleCard({ vehicle, showDealer = true, onSelect }: VehicleCardProps) {
+  const { specs } = vehicle
+
+  return (
+    <article className="group surface flex w-full flex-col overflow-hidden transition-shadow duration-200 hover:shadow-raised">
+      <button
+        type="button"
+        onClick={() => onSelect(vehicle)}
+        className="flex flex-1 cursor-pointer flex-col text-left outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset"
+        aria-label={`View ${vehicle.title}`}
+      >
+        <div className="relative overflow-hidden border-b">
+          <VehicleImage
+            src={vehicle.photos[0]}
+            alt={vehicle.title}
+            className="aspect-[16/10] w-full transition-transform duration-300 ease-out-soft group-hover:scale-[1.03]"
+          />
+          <span className="absolute top-2.5 left-2.5 rounded-md bg-card/95 px-1.5 py-0.5 text-caption font-medium text-foreground tabular-nums shadow-card">
+            {specs.year}
+          </span>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-3 p-4">
+          <div className="min-w-0 space-y-0.5">
+            <h3 className="truncate font-semibold text-foreground">
+              {specs.make} {specs.model}
+            </h3>
+            <p className="truncate text-caption text-muted-foreground">{specs.variant}</p>
+          </div>
+
+          <p className="text-lg font-semibold tracking-tight text-foreground tabular-nums">{formatPriceShort(vehicle.price)}</p>
+
+          <ul className="flex flex-wrap gap-1.5 text-caption text-foreground-secondary" aria-label="Key specifications">
+            {[FUEL_LABELS[specs.fuelType], TRANSMISSION_LABELS[specs.transmission], formatKm(specs.odometerKm)].map((item) => (
+              <li key={item} className="rounded-md bg-muted px-1.5 py-0.5 tabular-nums">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </button>
+
+      <footer className="flex items-center gap-2.5 border-t px-4 py-3">
+        {showDealer ? (
+          <>
+            <EntityAvatar name={vehicle.dealerName} size="sm" />
+            <span className="min-w-0 flex-1 truncate text-caption font-medium text-foreground-secondary">{vehicle.dealerName}</span>
+          </>
+        ) : (
+          <span className="flex-1 truncate text-caption text-muted-foreground">{vehicle.city}</span>
+        )}
+        <time dateTime={vehicle.marketplace.publishedAt} className="shrink-0 text-caption text-muted-foreground">
+          {formatRelative(vehicle.marketplace.publishedAt)}
+        </time>
+      </footer>
+    </article>
+  )
+}
+
+export function VehicleCardSkeleton() {
+  return (
+    <div aria-hidden className="surface overflow-hidden">
+      <Skeleton className="aspect-[16/10] w-full rounded-none" />
+      <div className="space-y-3 p-4">
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-5 w-1/3" />
+        <Skeleton className="h-4 w-full" />
+      </div>
+      <div className="border-t px-4 py-3">
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    </div>
+  )
+}

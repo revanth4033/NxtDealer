@@ -12,15 +12,15 @@ export function Breadcrumbs({ className }: { className?: string }) {
 
   return (
     <nav aria-label="Breadcrumb" className={cn('min-w-0', className)}>
-      <ol className="flex min-w-0 items-center gap-1.5 text-sm">
+      <ol className="flex min-w-0 items-center gap-1.5 text-[0.8125rem]">
         {!isHome && (
           <li className="flex shrink-0 items-center gap-1.5">
             <Link
               to={ROUTES.dashboard}
               aria-label="Dashboard"
-              className="grid size-7 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+              className="grid size-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
             >
-              <Home className="size-4" strokeWidth={1.75} />
+              <Home className="size-3.5" strokeWidth={1.75} />
             </Link>
             <ChevronRight aria-hidden className="size-3.5 text-muted-foreground/60" />
           </li>
@@ -30,14 +30,14 @@ export function Breadcrumbs({ className }: { className?: string }) {
           return (
             <li key={crumb.path} className="flex min-w-0 items-center gap-1.5">
               {isCurrent ? (
-                <span aria-current="page" className="truncate font-medium text-foreground">
+                <span aria-current="page" className="truncate text-foreground-secondary">
                   {crumb.label}
                 </span>
               ) : (
                 <>
                   <Link
                     to={crumb.path}
-                    className="truncate rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
+                    className="truncate rounded-sm text-muted-foreground transition-colors hover:text-foreground-secondary focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none"
                   >
                     {crumb.label}
                   </Link>

@@ -1,10 +1,4 @@
-import type {
-  AiReelStatus,
-  DealerPlan,
-  DealerStatus,
-  DealerVerificationStatus,
-  ListingStatus,
-} from '@/types'
+import type { DealerPlan, DealerStatus, DealerVerificationStatus, MarketplaceStatus } from '@/types'
 
 /** Visual tone of a status. Maps 1:1 to StatusBadge styles. */
 export type StatusTone = 'neutral' | 'brand' | 'success' | 'warning' | 'danger' | 'info'
@@ -39,19 +33,10 @@ export const DEALER_PLAN: Record<DealerPlan, StatusMeta> = {
   pro: { label: 'Pro', tone: 'brand' },
 }
 
-export const LISTING_STATUS: Record<ListingStatus, StatusMeta> = {
-  live: { label: 'Live', tone: 'success' },
-  draft: { label: 'Draft', tone: 'neutral' },
-  sold: { label: 'Sold', tone: 'info' },
-  flagged: { label: 'Flagged', tone: 'danger' },
-  expired: { label: 'Expired', tone: 'warning' },
-}
-
-export const AI_REEL_STATUS: Record<AiReelStatus, StatusMeta> = {
-  queued: { label: 'Queued', tone: 'neutral' },
-  processing: { label: 'Processing', tone: 'info' },
-  completed: { label: 'Completed', tone: 'success' },
-  failed: { label: 'Failed', tone: 'danger' },
+/** Pink (brand) marks marketplace presence throughout the portal. */
+export const MARKETPLACE_STATUS: Record<MarketplaceStatus, StatusMeta> = {
+  published: { label: 'Published', tone: 'brand' },
+  unpublished: { label: 'Not published', tone: 'neutral' },
 }
 
 /** Turns a status map into filter/tab options, preserving declaration order. */

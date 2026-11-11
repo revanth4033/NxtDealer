@@ -42,6 +42,15 @@ src/
 └── lib/          Utilities (cn, formatters)
 ```
 
+### Domain model
+
+- **Garage vehicle** (`GarageVehicle`) is every vehicle a dealer added in the app — the single source of vehicle truth.
+- **Marketplace** is the subset of garage vehicles whose `marketplace.status` is `published`. It is a view, never a
+  separate inventory: marketplace counts are always a share of garage counts, never added to them.
+- **AI reel** (`AiReel`) references a vehicle; one vehicle can have many reels, so reel counts are content counts.
+- Dealer `stats` and dashboard totals are computed by the service from these records.
+- The portal is read-only: no service exposes create, edit, publish or delete operations.
+
 ### Data flow
 
 `page → feature hook (TanStack Query) → services registry → contract → mock | http`
@@ -75,5 +84,25 @@ Pink (`primary`) is reserved for primary actions, the active nav item, focus and
 | Waiting                  | Skeletons first; `LoadingState` / `Spinner` otherwise       |
 | List state in the URL    | `useUrlState` (see `pages/ui-kit/use-dealer-table-state.ts`) |
 
+`cn` from `@/lib/utils` is configured with the custom type scale and shadows so they override component
+defaults. shadcn's CLI generates `import { cn } from "cn"` — switch new components to `@/lib/utils`.
+
 In development, **Developer → Component library** (`/ui-kit`) shows every component wired to the
 mock services. The route is excluded from production builds.
+
+## Mock media
+
+`public/mock-media/` holds placeholder media for the mock data layer:
+
+- **Vehicle photos** — 62 real photos of the catalogue models from Wikimedia Commons (CC licences; credits in
+  `public/mock-media/vehicles/ATTRIBUTION.md`), centre-cropped to 1024×768. Grouped into colour sets in
+  `src/mocks/vehicle-photos.ts`; a vehicle's colour always matches its photos.
+- **AI reels** — 9:16 H.264 MP4s (+ poster) rendered from each multi-photo set.
+
+Regenerating (`scripts/mock-media/`):
+
+```bash
+node scripts/mock-media/search-commons.mjs                 # find candidates → candidates.json
+node scripts/mock-media/download-photos.mjs "$PWD"         # download picks.json selections, crop, write credits
+swift scripts/mock-media/render-reels.swift "$PWD"         # render reels for sets in reel-sets.json (macOS)
+```

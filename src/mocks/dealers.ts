@@ -1,7 +1,10 @@
 import type { Dealer } from '@/types'
 
-/** Hand-written dealers that other fixtures (listings, reels) reference by id. */
-const curatedDealers: Dealer[] = [
+/** Dealer profiles. Inventory counts (`stats`) are computed by the mock service from vehicles and reels. */
+type DealerProfile = Omit<Dealer, 'stats'>
+
+/** Hand-written dealers that vehicle and reel fixtures reference by id. */
+const curatedDealers: DealerProfile[] = [
   {
     id: 'dlr_1001',
     businessName: 'Sai Krishna Motors',
@@ -12,8 +15,6 @@ const curatedDealers: Dealer[] = [
     status: 'active',
     plan: 'pro',
     verificationStatus: 'verified',
-    activeListings: 48,
-    reelsGenerated: 112,
     joinedAt: '2025-03-14T09:20:00.000Z',
     lastActiveAt: '2026-11-11T05:42:00.000Z',
   },
@@ -27,8 +28,6 @@ const curatedDealers: Dealer[] = [
     status: 'active',
     plan: 'growth',
     verificationStatus: 'verified',
-    activeListings: 31,
-    reelsGenerated: 64,
     joinedAt: '2025-06-02T11:05:00.000Z',
     lastActiveAt: '2026-11-10T16:18:00.000Z',
   },
@@ -42,8 +41,6 @@ const curatedDealers: Dealer[] = [
     status: 'pending',
     plan: 'free',
     verificationStatus: 'in_review',
-    activeListings: 6,
-    reelsGenerated: 3,
     joinedAt: '2026-10-28T07:45:00.000Z',
     lastActiveAt: '2026-11-09T10:02:00.000Z',
   },
@@ -57,8 +54,6 @@ const curatedDealers: Dealer[] = [
     status: 'active',
     plan: 'pro',
     verificationStatus: 'verified',
-    activeListings: 72,
-    reelsGenerated: 189,
     joinedAt: '2024-11-20T08:30:00.000Z',
     lastActiveAt: '2026-11-11T04:10:00.000Z',
   },
@@ -72,8 +67,6 @@ const curatedDealers: Dealer[] = [
     status: 'suspended',
     plan: 'growth',
     verificationStatus: 'rejected',
-    activeListings: 0,
-    reelsGenerated: 21,
     joinedAt: '2025-09-09T12:00:00.000Z',
     lastActiveAt: '2026-09-30T14:25:00.000Z',
   },
@@ -87,8 +80,6 @@ const curatedDealers: Dealer[] = [
     status: 'active',
     plan: 'growth',
     verificationStatus: 'verified',
-    activeListings: 27,
-    reelsGenerated: 45,
     joinedAt: '2025-12-15T06:40:00.000Z',
     lastActiveAt: '2026-11-10T09:55:00.000Z',
   },
@@ -102,8 +93,6 @@ const curatedDealers: Dealer[] = [
     status: 'inactive',
     plan: 'free',
     verificationStatus: 'unverified',
-    activeListings: 2,
-    reelsGenerated: 0,
     joinedAt: '2026-04-03T10:15:00.000Z',
     lastActiveAt: '2026-06-18T08:00:00.000Z',
   },
@@ -117,8 +106,6 @@ const curatedDealers: Dealer[] = [
     status: 'active',
     plan: 'pro',
     verificationStatus: 'verified',
-    activeListings: 39,
-    reelsGenerated: 97,
     joinedAt: '2025-01-27T09:00:00.000Z',
     lastActiveAt: '2026-11-11T03:30:00.000Z',
   },
@@ -160,12 +147,11 @@ const VERIFICATION: Record<Dealer['status'], Dealer['verificationStatus']> = {
 
 const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '')
 
-const generatedDealers: Dealer[] = GENERATED_DEALER_SEED.map(
-  ([businessName, ownerName, city, state], index): Dealer => {
+const generatedDealers: DealerProfile[] = GENERATED_DEALER_SEED.map(
+  ([businessName, ownerName, city, state], index): DealerProfile => {
     const status = STATUSES[index % STATUSES.length]
-    const isActive = status === 'active'
     const joined = new Date(Date.UTC(2025, (index * 5) % 12, 3 + ((index * 7) % 24), 9, 0))
-    const lastActive = new Date(Date.UTC(2026, 10, 11 - (index % 9), 6 + (index % 8), 15))
+    const lastActive = new Date(Date.UTC(2026, 10, 10 - (index % 9), 6 + (index % 8), 15))
     return {
       id: `dlr_${1101 + index}`,
       businessName,
@@ -176,12 +162,10 @@ const generatedDealers: Dealer[] = GENERATED_DEALER_SEED.map(
       status,
       plan: PLANS[index % PLANS.length],
       verificationStatus: VERIFICATION[status],
-      activeListings: isActive ? 8 + ((index * 13) % 46) : (index % 3),
-      reelsGenerated: isActive ? 5 + ((index * 17) % 90) : (index % 4),
       joinedAt: joined.toISOString(),
       lastActiveAt: lastActive.toISOString(),
     }
   },
 )
 
-export const mockDealers: Dealer[] = [...curatedDealers, ...generatedDealers]
+export const mockDealerProfiles: DealerProfile[] = [...curatedDealers, ...generatedDealers]

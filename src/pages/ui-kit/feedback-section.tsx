@@ -8,11 +8,10 @@ import { StatusBadge } from '@/components/common/status-badge'
 import { PageSection } from '@/components/layout/page-container'
 import { Button } from '@/components/ui/button'
 import {
-  AI_REEL_STATUS,
   DEALER_PLAN,
   DEALER_STATUS,
   DEALER_VERIFICATION,
-  LISTING_STATUS,
+  MARKETPLACE_STATUS,
   type StatusMeta,
 } from '@/config/status'
 import { ROUTES } from '@/config/routes'
@@ -20,8 +19,7 @@ import { ROUTES } from '@/config/routes'
 const STATUS_GROUPS: { title: string; map: Record<string, StatusMeta>; hideDot?: boolean }[] = [
   { title: 'Dealer status', map: DEALER_STATUS },
   { title: 'Verification', map: DEALER_VERIFICATION },
-  { title: 'Listing status', map: LISTING_STATUS },
-  { title: 'AI reel status', map: AI_REEL_STATUS },
+  { title: 'Marketplace', map: MARKETPLACE_STATUS },
   { title: 'Plan', map: DEALER_PLAN, hideDot: true },
 ]
 

@@ -7,8 +7,8 @@ import { SectionHeader } from '@/components/common/section-header'
 import { PageSection } from '@/components/layout/page-container'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { AI_REEL_STATUS, LISTING_STATUS, toOptions } from '@/config/status'
-import type { AiReelStatus, ListingStatus } from '@/types'
+import { DEALER_VERIFICATION, MARKETPLACE_STATUS, toOptions } from '@/config/status'
+import type { DealerVerificationStatus, MarketplaceStatus } from '@/types'
 
 /** Interactive input components. Each demo reflects its current value so behaviour is verifiable. */
 export function InputsSection() {
@@ -83,8 +83,8 @@ function ButtonsDemo() {
 
 function SearchAndFiltersDemo() {
   const [query, setQuery] = useState('')
-  const [statuses, setStatuses] = useState<ListingStatus[]>(['live'])
-  const [reelStatus, setReelStatus] = useState<AiReelStatus | undefined>()
+  const [statuses, setStatuses] = useState<DealerVerificationStatus[]>(['verified'])
+  const [marketplace, setMarketplace] = useState<MarketplaceStatus | undefined>()
 
   return (
     <PageSection labelledBy="kit-filters">
@@ -96,26 +96,26 @@ function SearchAndFiltersDemo() {
       <DemoSurface>
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <SearchInput value={query} onValueChange={setQuery} placeholder="Search listings" />
+            <SearchInput value={query} onValueChange={setQuery} placeholder="Search vehicles" />
             <FilterDropdown
               mode="multiple"
-              label="Listing status"
-              options={toOptions(LISTING_STATUS)}
+              label="Verification"
+              options={toOptions(DEALER_VERIFICATION)}
               value={statuses}
               onValueChange={setStatuses}
             />
             <FilterDropdown
               mode="single"
-              label="Reel status"
-              options={toOptions(AI_REEL_STATUS)}
-              value={reelStatus}
-              onValueChange={setReelStatus}
+              label="Marketplace"
+              options={toOptions(MARKETPLACE_STATUS)}
+              value={marketplace}
+              onValueChange={setMarketplace}
             />
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-1">
             <ValueReadout label="Committed search" value={query ? `“${query}”` : 'none'} />
-            <ValueReadout label="Listing status" value={statuses.length ? statuses.join(', ') : 'any'} />
-            <ValueReadout label="Reel status" value={reelStatus ?? 'any'} />
+            <ValueReadout label="Verification" value={statuses.length ? statuses.join(', ') : 'any'} />
+            <ValueReadout label="Marketplace" value={marketplace ?? 'any'} />
           </div>
         </div>
       </DemoSurface>
