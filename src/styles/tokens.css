@@ -1,0 +1,114 @@
+/*
+ * NxtDealer design tokens
+ * ------------------------------------------------------------
+ * Layer 1 — primitives: raw brand + neutral palette (never used directly in components)
+ * Layer 2 — semantic: role-based tokens consumed via Tailwind utilities (see globals.css)
+ *
+ * Brand reference
+ *   Primary        #B51B75
+ *   Primary Dark   #91165E
+ *   Accent         #FAEFF5
+ *   Background     #F4F4F4
+ *   Primary Text   #111212
+ *   Secondary Text #3C3C43
+ */
+
+:root {
+  /* ---------- Layer 1: primitives ---------- */
+
+  /* Brand pink */
+  --pink-50: #faeff5; /* Accent */
+  --pink-100: #f5dcea;
+  --pink-200: #ebb9d5;
+  --pink-500: #b51b75; /* Primary */
+  --pink-600: #91165e; /* Primary Dark */
+  --pink-700: #6c1046;
+
+  /* Neutrals — tuned around the brand background and text colors */
+  --neutral-0: #ffffff;
+  --neutral-50: #f9f9fa;
+  --neutral-100: #f4f4f4; /* Background */
+  --neutral-150: #ededef;
+  --neutral-200: #e5e5e8;
+  --neutral-300: #d4d4d9;
+  --neutral-400: #a1a1a9;
+  --neutral-500: #6b6b73;
+  --neutral-700: #3c3c43; /* Secondary Text */
+  --neutral-900: #111212; /* Primary Text */
+
+  /* ---------- Layer 2: semantic ---------- */
+
+  /* Surfaces */
+  --canvas: var(--neutral-100); /* app background behind content */
+  --background: var(--neutral-0); /* base surface used by shadcn primitives */
+  --card: var(--neutral-0);
+  --card-foreground: var(--neutral-900);
+  --popover: var(--neutral-0);
+  --popover-foreground: var(--neutral-900);
+
+  /* Text */
+  --foreground: var(--neutral-900); /* primary text */
+  --foreground-secondary: var(--neutral-700); /* secondary text, body copy */
+  --muted-foreground: var(--neutral-500); /* captions, placeholders, meta */
+
+  /* Brand roles */
+  --primary: var(--pink-500);
+  --primary-hover: var(--pink-600);
+  --primary-foreground: var(--neutral-0);
+  --accent: var(--pink-50);
+  --accent-foreground: var(--pink-600);
+
+  /* Neutral roles */
+  --secondary: var(--neutral-100);
+  --secondary-foreground: var(--neutral-900);
+  --muted: var(--neutral-100);
+
+  /* Lines & focus */
+  --border: var(--neutral-200);
+  --input: var(--neutral-200);
+  --ring: var(--pink-500);
+
+  /* Status */
+  --destructive: #c42b2b;
+  --danger-soft: #fdeded;
+  --success: #17803d;
+  --success-soft: #e9f6ee;
+  --warning: #a35a00;
+  --warning-soft: #fdf3e2;
+  --info: #2458b8;
+  --info-soft: #ebf1fc;
+
+  /*
+   * Data visualization — provisional categorical set.
+   * Brand pink leads; neutrals and one cool hue support it.
+   * Revisit and validate when charts are designed.
+   */
+  --chart-1: var(--pink-500);
+  --chart-2: #4a5bd4;
+  --chart-3: #1f8a7a;
+  --chart-4: #d08a1a;
+  --chart-5: var(--neutral-400);
+
+  /* Sidebar */
+  --sidebar: var(--neutral-0);
+  --sidebar-foreground: var(--neutral-700);
+  --sidebar-primary: var(--pink-500);
+  --sidebar-primary-foreground: var(--neutral-0);
+  --sidebar-accent: var(--pink-50);
+  --sidebar-accent-foreground: var(--pink-600);
+  --sidebar-border: var(--neutral-200);
+  --sidebar-ring: var(--pink-500);
+
+  /* Shape */
+  --radius: 0.5rem;
+
+  /* Elevation */
+  --elevation-card: 0 1px 2px 0 rgb(17 18 18 / 0.04);
+  --elevation-raised: 0 1px 2px 0 rgb(17 18 18 / 0.04), 0 4px 12px -2px rgb(17 18 18 / 0.06);
+  --elevation-overlay: 0 2px 6px 0 rgb(17 18 18 / 0.06), 0 12px 32px -8px rgb(17 18 18 / 0.14);
+
+  /* Layout */
+  --layout-sidebar-width: 15.5rem;
+  --layout-topbar-height: 4rem;
+  --layout-content-max-width: 90rem;
+}
