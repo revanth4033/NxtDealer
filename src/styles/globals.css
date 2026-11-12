@@ -87,9 +87,11 @@
   --shadow-raised: var(--elevation-raised);
   --shadow-overlay: var(--elevation-overlay);
 
-  /* Layout primitives → w-sidebar, h-topbar, max-w-content */
+  /* Layout primitives → w-sidebar, h-topbar, max-w-content, p*-gutter, gap-section */
   --spacing-sidebar: var(--layout-sidebar-width);
   --spacing-topbar: var(--layout-topbar-height);
+  --spacing-gutter: var(--layout-page-gutter);
+  --spacing-section: var(--layout-section-gap);
   --container-content: var(--layout-content-max-width);
 }
 

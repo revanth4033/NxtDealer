@@ -31,7 +31,8 @@ export function AppShell() {
         <div className="flex min-h-dvh min-w-0 flex-col lg:pl-sidebar">
           <Topbar />
           <main ref={mainRef} id="main-content" tabIndex={-1} className="flex-1 outline-none">
-            <div className="mx-auto w-full max-w-content px-4 pt-6 pb-12 sm:px-6 lg:px-10 lg:pt-10 lg:pb-16">
+            {/* 24px page gutter on every side from `sm` up; phones keep a 16px side inset for usable width. */}
+            <div className="mx-auto w-full max-w-content px-4 py-gutter sm:px-gutter">
               <Outlet />
             </div>
           </main>

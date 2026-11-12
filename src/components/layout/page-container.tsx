@@ -3,14 +3,14 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * Vertical rhythm for a page: header → content sections.
- * 32px between the header block and content, 32px between sections on desktop.
+ * Vertical rhythm for a page: header → content sections, `gap-section` (24px) apart at every width.
+ * Pages never add their own section spacing; change `--layout-section-gap` instead.
  */
 export function PageContainer({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('flex flex-col gap-6 lg:gap-8', className)}>{children}</div>
+  return <div className={cn('flex flex-col gap-section', className)}>{children}</div>
 }
 
-/** A titled content block within a page. Pair with SectionHeader. */
+/** A titled content block within a page. Pair with SectionHeader; its content sits `gap-section` below the heading. */
 export function PageSection({
   children,
   className,
@@ -22,7 +22,7 @@ export function PageSection({
   labelledBy?: string
 }) {
   return (
-    <section aria-labelledby={labelledBy} className={cn('flex flex-col gap-4', className)}>
+    <section aria-labelledby={labelledBy} className={cn('flex flex-col gap-section', className)}>
       {children}
     </section>
   )

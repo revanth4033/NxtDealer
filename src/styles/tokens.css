@@ -110,5 +110,11 @@
   /* Layout */
   --layout-sidebar-width: 15.5rem;
   --layout-topbar-height: 4rem;
-  --layout-content-max-width: 90rem;
+  /* Wide enough that the content column fills the space beside the sidebar up to ~2200px viewports, instead of
+     centring with large empty margins on common 1600–1920px screens. */
+  --layout-content-max-width: 120rem;
+  /* Page rhythm (24px): main-content padding from `sm` up and the topbar's matching inset (phones keep 16px),
+     the space between page sections, and between a section heading and its content. */
+  --layout-page-gutter: 1.5rem;
+  --layout-section-gap: 1.5rem;
 }

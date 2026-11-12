@@ -123,7 +123,7 @@ function DealerDetails({ dealer }: { dealer: Dealer }) {
       <DealerProfileHeader dealer={dealer} />
       <DealerActivityKpis totals={totals} />
 
-      <div className="grid items-start gap-6 lg:gap-8 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+      <div className="grid items-start gap-section xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <DealerInformation dealer={dealer} />
         <DealerShowroom dealer={dealer} />
       </div>
