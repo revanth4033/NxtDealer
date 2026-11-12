@@ -32,10 +32,13 @@ export function StatCard({ label, value, icon: Icon, context, meter, className }
         {Icon && <Icon aria-hidden className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.75} />}
       </div>
       <p className="text-metric text-foreground tabular-nums">{value}</p>
-      <div className="mt-auto flex flex-col gap-2">
-        {context && <div className="text-caption text-muted-foreground">{context}</div>}
-        {meter && <Meter {...meter} />}
-      </div>
+      {/* Only rendered when there is something to show, so a label-and-value card has no empty row. */}
+      {(context || meter) && (
+        <div className="mt-auto flex flex-col gap-2">
+          {context && <div className="text-caption text-muted-foreground">{context}</div>}
+          {meter && <Meter {...meter} />}
+        </div>
+      )}
     </div>
   )
 }
@@ -59,12 +62,13 @@ function Meter({ value, max, label }: StatMeter) {
   )
 }
 
-export function StatCardSkeleton({ className }: { className?: string }) {
+/** Loading placeholder. Pass `withContext={false}` for label-and-value cards so loading doesn't shift the layout. */
+export function StatCardSkeleton({ className, withContext = true }: { className?: string; withContext?: boolean }) {
   return (
     <div aria-hidden className={cn('surface flex flex-col gap-3 p-5', className)}>
       <Skeleton className="h-4 w-28" />
       <Skeleton className="h-8 w-20" />
-      <Skeleton className="mt-auto h-3.5 w-36" />
+      {withContext && <Skeleton className="mt-auto h-3.5 w-36" />}
     </div>
   )
 }
