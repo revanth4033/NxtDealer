@@ -13,12 +13,13 @@ disagree, trust the code and update this document.
 
 | | |
 |---|---|
-| Last commit | `706c288` (`706c288a201efaaf84c7d831286ba93deb9b174d`): `feat: add marketplace monitoring` (12 Nov 2026, Phase 05). Earlier: `796b7e3` (handoff update), `dc56245` (handoff document), `843c9c3` (Phase 04B) |
-| Remote | GitHub `origin/main` (`https://github.com/revanth4033/NxtDealer.git`) is at `706c288`, the same as local `main`. Claude Code commits and pushes only when the product owner explicitly instructs it (§9.1) |
+| Last code commit | `0e6048a` (`0e6048ab38e1c9816a3ce20c6cdb4f2aff355439`): `style: simplify KPI cards across admin portal` (12 Nov 2026). This handoff update is committed on top of it as `docs: update handoff for spacing and KPI refinements` (run `git log -1` for its hash) |
+| Recent commits | `0e6048a` KPI cards · `47cd8b4` `style: refine global admin portal spacing` · `f0edf92` `docs: finalize phase 05 handoff` · `706c288` `feat: add marketplace monitoring` (Phase 05) · `796b7e3`, `dc56245` (handoff) · `843c9c3` (Phase 04B) |
+| Remote | GitHub `origin/main` (`https://github.com/revanth4033/NxtDealer.git`) is synchronised with local `main` (`0e6048a` before this documentation commit; this commit is pushed as well). Claude Code commits and pushes only when the product owner explicitly instructs it (§9.1) |
 | Working tree | Clean, apart from the untracked local `.claude/` folder (Claude Code configuration, not project code; never commit it) |
-| Completed phases | 01, 02, 03, 04A, 04B, 05 (05A data layer, 05B UI, 05C verification). All reviewed, approved, committed and pushed |
+| Completed phases | 01, 02, 03, 04A, 04B, 05 (05A data layer, 05B UI, 05C verification), plus the post-Phase 05 UI refinements (global spacing, compact KPI cards). All reviewed, approved, committed and pushed |
 | Next phase | **Phase 06: scope not yet defined. Wait for the product owner's brief before beginning it.** |
-| Checks at last commit | Typecheck, lint and production build all pass |
+| Checks at last commit | Typecheck, lint and production build pass; Phase 05 data check 4,290/0; mock-data fingerprints unchanged |
 | Data source | Mock data only. No backend is connected. |
 
 ---
@@ -139,7 +140,7 @@ them without explicit instruction.
 | Elevation | `--elevation-card` / `-raised` / `-overlay`, deliberately subtle | `shadow-card`, `shadow-raised`, `shadow-overlay` |
 | Layout | sidebar `15.5rem`, topbar `4rem`, content max width `120rem` (`--layout-content-max-width`) | `w-sidebar`, `h-topbar`, `max-w-content` |
 | Page rhythm | 24px page gutter (`--layout-page-gutter`: main-content padding from `sm` up and the topbar inset; phones keep 16px sides) and 24px section gap (`--layout-section-gap`: between page sections and between a section heading and its content). Card grids use `gap-4` (16px). Component padding is unchanged | `px-gutter`, `py-gutter`, `gap-section` |
-| KPI cards | Every KPI group (Dashboard platform and single-dealer views, Dealers, dealer detail, Marketplace) shows label, value and icon only, at one height (108px). `StatCard` still supports `context` and `meter` (used in `/ui-kit`), but no page passes them. The single-dealer Dashboard account card follows the same structure (plan as value, status badge in the corner) | `StatCard`, `StatCardSkeleton withContext={false}` |
+| KPI cards | **Compact pattern:** label, main value (`text-metric`) and the contextual icon only. No supporting descriptions, percentages or progress bars. Used by every KPI group (Dashboard platform and single-dealer views, Dealers, dealer detail, Marketplace) at one height (108px), four per row from `xl`. `StatCard` still accepts `context` and `meter` (shown in `/ui-kit`), but no page passes them. The single-dealer Dashboard account card follows the same structure: plan as the value, status badge in the icon position | `StatCard`, `StatCardSkeleton withContext={false}` |
 
 - **Typeface:** DM Sans (variable), loaded via `@fontsource-variable/dm-sans` in `src/styles/globals.css`.
 - **Type scale** (in `globals.css`): `text-display` (30px), `text-page-title` (24px/600), `text-section-title` (16px/600),
@@ -159,6 +160,10 @@ them without explicit instruction.
 - No excessive gradients, unnecessary decoration or playful illustrations.
 - Prefer reusable components and consistent interaction patterns.
 - No fabricated trends, sparklines or percentage changes. Every metric must come from real records.
+- **Compact, consistent layout** (product owner, 12 Nov 2026): 24px page gutter and section spacing, 16px card grid
+  gaps; reduce page-level whitespace without shrinking components or type.
+- **KPI cards are label, value and icon only.** Breakdowns and context belong in the page's own sections (directory
+  filters, insights, detail panels), not under the KPI figure.
 
 ### 3.3 Shared components (`src/components/`)
 
@@ -167,7 +172,7 @@ them without explicit instruction.
 | Page title, description, actions, inline meta (e.g. a count) | `layout/PageHeader` |
 | Page vertical rhythm, titled sections | `layout/PageContainer`, `PageSection` + `common/SectionHeader` |
 | "Go to full page" link in a section header | `common/SectionLink` |
-| KPI tile (optional part-of-whole meter) | `common/StatCard`, `StatCardSkeleton` |
+| KPI tile | `common/StatCard` (label, value, icon; the bottom row renders only when `context` or `meter` is passed, and pages pass neither), `StatCardSkeleton` (`withContext={false}` matches the compact card so loading doesn't shift layout) |
 | Domain status label | `common/StatusBadge` + maps in `src/config/status.ts` (`DEALER_STATUS`, `DEALER_PLAN`, `SHOWROOM_STATUS`, `MARKETPLACE_STATUS`) |
 | Dealer / organisation initials | `common/EntityAvatar` (sizes `sm`, `md`, `lg`) |
 | Record lists | `data-table/DataTable` + `createDataTableColumnHelper` (manual sorting, skeleton rows, toolbar/footer slots, optional whole-row click) |
@@ -339,6 +344,9 @@ Other top-level items: `scripts/mock-media/` (photo and reel pipeline), `public/
 - Sticky **topbar**: mobile menu button, route-driven **breadcrumbs** (subtle; the H1 dominates), a "Mock data" source
   indicator and the user menu. "Sign out" is a **disabled** item: there is no authentication yet.
 - The admin user comes from `SessionService.getCurrentAdmin()` (mock: "Admin User", `super_admin`).
+- **Content column:** `mx-auto max-w-content` (120rem) with `px-4 py-gutter sm:px-gutter`, so 24px padding from `sm`
+  up and 16px sides on phones. The topbar uses the same `sm:px-gutter`, so breadcrumbs align with the page title. Up to
+  about 2200px-wide viewports the content starts 24px from the sidebar; beyond that the column centres.
 - Accessibility features already in place: skip link, focus moves to `<main>` on navigation, document titles per route,
   `ScrollRestoration`, visible focus rings.
 
@@ -349,9 +357,9 @@ Other top-level items: `scripts/mock-media/` (photo and reel pipeline), `public/
 | Route | Status | What exists |
 |---|---|---|
 | `/` | Redirect | To `/dashboard` |
-| `/dashboard` | **Implemented** (Phase 03) | *All dealers* view: KPIs (dealers, garage, marketplace, reels), latest marketplace vehicles, dealer inventory table, latest-reels strip. *Individual dealer* view via a searchable dealer selector (resets when leaving the page): dealer KPIs + profile card, the dealer's marketplace vehicles, garage table, reel gallery. Vehicle detail sheet and reel player. |
-| `/dealers` | **Implemented** (Phase 04A) | Directory: header count, 4 summary cards (Total, Active, Suspended, Dealers with listings), search (name, owner, city), Account status and Plan filters, clear filters, sortable columns, pagination, URL-backed state, empty/no-results/error states, row click opens the dealer. |
-| `/dealers/:dealerId` | **Implemented** (Phase 04B, back link extended in Phase 05) | Dealer detail: profile header, 4 activity KPIs, dealer information, single showroom card, garage inventory (tabs, search, pagination), marketplace listings, AI reels gallery, vehicle and reel previews, breadcrumb with the dealer's name, "Dealer not found" state. The back link returns to the originating page: the Dealers directory with its state restored, or the filtered Marketplace view (§5.1b). |
+| `/dashboard` | **Implemented** (Phase 03) | *All dealers* view: 4 compact KPI cards (Total dealers, Total vehicles, Marketplace vehicles, AI reels created), latest marketplace vehicles, dealer inventory table, latest-reels strip. *Individual dealer* view via a searchable dealer selector (resets when leaving the page): 3 compact dealer KPI cards + a dealer account card (plan, status badge), the dealer's marketplace vehicles, garage table, reel gallery. Vehicle detail sheet and reel player. |
+| `/dealers` | **Implemented** (Phase 04A) | Directory: header count, 4 compact summary cards (Total, Active, Suspended, Dealers with listings), search (name, owner, city), Account status and Plan filters, clear filters, sortable columns, pagination, URL-backed state, empty/no-results/error states, row click opens the dealer. |
+| `/dealers/:dealerId` | **Implemented** (Phase 04B, back link extended in Phase 05) | Dealer detail: profile header, 4 compact activity KPI cards (Garage, Marketplace, Unpublished, AI reels), dealer information, single showroom card, garage inventory (tabs, search, pagination), marketplace listings, AI reels gallery, vehicle and reel previews, breadcrumb with the dealer's name, "Dealer not found" state. The back link returns to the originating page: the Dealers directory with its state restored, or the filtered Marketplace view (§5.1b). |
 | `/marketplace` | **Implemented** (Phase 05, `706c288`) | Header with published count; 4 KPI cards (Published listings 160, Dealers with listings 16, Cities 14, Vehicle makes 9; label, value and icon only); insights (top 5 dealers + "View all 16" dialog, listings by make, listings by city; CSS ranked bars); Recently published (latest 6 with calendar dates); All listings directory with search, 8 faceted filters (Dealer, City, Make, Model, Fuel, Transmission, Year from/to, Price min/max), sort menu and sortable headers, Table/Grid switch (9-column table, 3-column card grid), pagination, empty/no-results/error states, vehicle preview and reel player, dealer links. |
 | `/ai-reels` | **Placeholder** | `ModulePlaceholder` with a reel count. Not designed or built. |
 | `/settings` | **Placeholder** | `ModulePlaceholder`. Not designed or built. |
@@ -502,8 +510,8 @@ gained `getInsights()` and `getFacets(filters)`; mock filtering applied before s
 - new RankedBarList, RangeFilter and FilterTrigger
 
 What the page contains:
-- **KPIs:** Published listings, Dealers with listings, Cities, Vehicle makes, from `getInsights()` and the platform
-  summary.
+- **KPIs:** Published listings, Dealers with listings, Cities, Vehicle makes, from `getInsights()`. Originally with
+  supporting lines (share of garage, registered dealers); simplified to the compact pattern in `0e6048a`.
 - **Insights:** top 5 dealers with a "View all" ranking dialog, listings by make and listings by city, as CSS ranked
   bars. Platform-wide and unaffected by directory filters.
 - **Recently published:** the latest 6 listings, newest first, with calendar dates.
@@ -532,6 +540,37 @@ Decisions made during review:
 **05C, verification (completed):** typecheck, lint and production build; the independent data check; browser checks at
 1440px and 390px; Dashboard and dealer detail regression checks; mock data and fingerprints unchanged (details in the
 §12 log). Screenshots: `~/Downloads/Revanth/NxtDealer-screenshots/phase-05b/` (01–17).
+
+### Post-Phase 05 UI refinements (12 Nov 2026)
+Two portal-wide refinements requested by the product owner after Phase 05, each its own commit. No data, services,
+hooks, routes or interactions changed.
+
+**Global spacing (`47cd8b4`, `style: refine global admin portal spacing`):**
+- **Before:** 40px side and top padding, 64px bottom and 32px between sections at desktop, plus a 90rem centred
+  content column (about 156px empty beside the sidebar on 1920px screens).
+- **New tokens** in `tokens.css`, exposed in `globals.css`: `--layout-page-gutter` and `--layout-section-gap` (both
+  24px, utilities `px-gutter`, `py-gutter`, `gap-section`). `--layout-content-max-width` raised to 120rem.
+- **Applied through shared components only:** `AppShell` content padding; `Topbar` inset (now aligned with the
+  content); `PageContainer` and `PageSection` gaps; and the dealer detail page's own grid gap, which now uses
+  `gap-section`.
+- **Result on all six pages at 1440px:** 24px padding, section gaps and heading-to-content spacing. Card grids stay at
+  16px; phones keep 16px sides; no horizontal overflow at 1440px or 390px.
+
+**Compact KPI cards (`0e6048a`, `style: simplify KPI cards across admin portal`):**
+- **Applied to** every KPI group: Dashboard (platform and single-dealer views), Dealers, dealer detail and Marketplace.
+  Each card is now label, value and contextual icon; values and calculations are unchanged.
+- **Removed:**
+  - every supporting description
+  - the progress bars (Dashboard and single-dealer Marketplace vehicles, Dealers Active dealers, Marketplace Published
+    listings) and their percentages
+  - the single-dealer account card's joined and last-active lines (it now shows plan and status in the same structure)
+- **`StatCard`** renders its bottom row only when given content. **`StatCardSkeleton`** gained `withContext`, so
+  loading matches the compact cards.
+- **Marketplace KPIs** no longer request the platform summary, which only fed the removed lines.
+- **Result:** all KPI cards are 108px (previously about 136–159px), with labels and values aligned; one row of four at
+  1440px, one column at 390px.
+
+Screenshots (before and after): `~/Downloads/Revanth/NxtDealer-screenshots/spacing-refinement/`.
 
 ---
 
@@ -588,6 +627,10 @@ current one. Phase briefs typically end with "stop and wait for my review"; resp
   - The model filter assumes model names are unique across makes (true in the current catalogue).
   - Mock timestamps are anchored at 10 Nov 2026. Relative labels ("3 days ago", Dashboard) use the real clock, so the
     data looks older over time; the Marketplace shows calendar dates.
+- **Information no longer on KPI cards** (by design, 12 Nov 2026): active/suspended split on the Dashboard, the share
+  of garage vehicles published, vehicles covered by reels, and the single dealer's joined and last-active dates. The
+  data is still in the services, and the dealer detail page still shows joined and last active. Reinstate only on the
+  product owner's request.
 - **Phase 05 verification script is not in the repository:** it lived in a Claude Code session scratchpad.
   It compared `list` / `getInsights` / `getFacets` with brute-force counts over `mockVehicles` (incl. 300 randomised
   filter combinations, the model rule and URL parsing). Recreate it if regression checks are needed; there is no
@@ -616,6 +659,7 @@ current one. Phase briefs typically end with "stop and wait for my review"; resp
 | Phase 05A: Marketplace data layer | Complete |
 | Phase 05B: Marketplace UI | Complete |
 | Phase 05C: Marketplace verification | Complete (Phase 05 committed and pushed as `706c288`) |
+| UI refinements: global spacing, compact KPI cards | Complete (`47cd8b4`, `0e6048a`) |
 | Phase 06 | **Next. Scope not yet defined** |
 
 **Phase 06 is next, and its scope has not been defined. Wait for the product owner's brief before beginning it.**
@@ -705,6 +749,27 @@ Add a new dated entry for each session; don't overwrite earlier entries.
 - Updated this `HANDOFF.md`: commit references, Phase 05A/05B/05C marked complete, final Phase 05 details,
   remaining limitations, and Phase 06 recorded as next with its scope not yet defined.
 - No application code changes in this documentation update.
+
+### 12 November 2026 (UI refinements committed; handoff updated)
+- The product owner asked for a more compact layout, then compact KPI cards across the whole portal; both approved.
+- **Spacing:** shared tokens and layout components (see §8). Measured on all six pages before and after at 1440px and
+  390px.
+- **KPI cards:** simplified on Dashboard, Dealers, dealer detail and Marketplace (see §8). All KPI groups verified at
+  108px and aligned, with no horizontal overflow.
+- **Commits, pushed to `origin/main` (`706c288..0e6048a`):**
+  1. `f0edf92`: `docs: finalize phase 05 handoff` (`HANDOFF.md` only)
+  2. `47cd8b4`: `style: refine global admin portal spacing` (`tokens.css`, `globals.css`, `app-shell.tsx`,
+     `topbar.tsx`, `page-container.tsx`, `dealer-details-page.tsx`)
+  3. `0e6048a`: `style: simplify KPI cards across admin portal` (`stat-card.tsx`, `dashboard-kpis.tsx`,
+     `dealer-summary-cards.tsx`, `dealer-activity-kpis.tsx`, `dealer-profile-card.tsx`, `marketplace-kpis.tsx`)
+- **Verification on the committed tree:**
+  - typecheck, lint and production build pass
+  - Phase 05 data check: 4,290 passed, 0 failed
+  - `src/mocks`, `src/services`, `public` and `scripts` unchanged since `706c288`
+  - fingerprints `54bfedbb34a61495` and `be9082c113569963` unchanged
+- **This `HANDOFF.md` update** is committed separately as `docs: update handoff for spacing and KPI refinements` and
+  pushed. Local and GitHub `main` are synchronised; the working tree is clean apart from the untracked `.claude/` folder.
+- Phase 05 remains complete. **Phase 06 is next; its scope is not yet defined.**
 
 ---
 
