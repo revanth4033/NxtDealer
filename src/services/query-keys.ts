@@ -4,6 +4,7 @@ import type {
   DealerListParams,
   EntityId,
   GarageListParams,
+  MarketplaceFilters,
   MarketplaceListParams,
 } from '@/types'
 
@@ -29,6 +30,8 @@ export const queryKeys = {
   marketplace: {
     all: ['marketplace'] as const,
     list: (params: MarketplaceListParams = {}) => ['marketplace', 'list', params] as const,
+    insights: ['marketplace', 'insights'] as const,
+    facets: (filters: MarketplaceFilters = {}) => ['marketplace', 'facets', filters] as const,
   },
   aiReels: {
     all: ['ai-reels'] as const,

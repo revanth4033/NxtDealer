@@ -12,10 +12,10 @@ import { DealerReelGallery } from '@/features/ai-reels/components/dealer-reel-ga
 import { ReelPreviewDialog } from '@/features/ai-reels/components/reel-preview-dialog'
 import { useDashboardSummary } from '@/features/dashboard/hooks/use-dashboard-summary'
 import { DealerActivityKpis } from '@/features/dealers/components/dealer-activity-kpis'
-import type { DealerDirectoryLinkState } from '@/features/dealers/components/dealer-directory-columns'
 import { DealerInformation } from '@/features/dealers/components/dealer-information'
 import { DealerProfileHeader } from '@/features/dealers/components/dealer-profile-header'
 import { DealerShowroom } from '@/features/dealers/components/dealer-showroom'
+import { readDealerLinkState } from '@/features/dealers/dealer-link-state'
 import { useDealer } from '@/features/dealers/hooks/use-dealers'
 import { DealerGarageTable } from '@/features/garage/components/dealer-garage-table'
 import { VehicleDetailSheet } from '@/features/garage/components/vehicle-detail-sheet'
@@ -36,15 +36,17 @@ export function DealerDetailsPage() {
   const location = useLocation()
   const dealer = useDealer(dealerId)
 
-  // Return to the directory with the same search, filters, sort and page the admin left.
-  const directorySearch = (location.state as DealerDirectoryLinkState | null)?.directorySearch ?? ''
-  const directoryPath = `${ROUTES.dealers}${directorySearch}`
+  // Return to the directory with the same search, filters, sort and page the admin left, or to the
+  // page that linked here (e.g. a filtered Marketplace view). The breadcrumb always leads to Dealers.
+  const linkState = readDealerLinkState(location.state)
+  const directoryPath = `${ROUTES.dealers}${linkState.directorySearch ?? ''}`
+  const back = linkState.returnTo ?? { path: directoryPath, label: 'All dealers' }
   usePageMeta({ title: dealer.data?.businessName, parentPath: directoryPath })
 
   const backLink = (
     <Button variant="ghost" asChild className="-ml-3 w-fit text-foreground-secondary">
-      <Link to={directoryPath}>
-        <ArrowLeft /> All dealers
+      <Link to={back.path}>
+        <ArrowLeft /> {back.label}
       </Link>
     </Button>
   )

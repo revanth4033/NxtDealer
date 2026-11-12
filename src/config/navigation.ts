@@ -40,7 +40,7 @@ export const NAV_ITEMS = {
     label: 'Marketplace',
     path: ROUTES.marketplace,
     icon: Store,
-    description: 'Vehicle listings, moderation and buyer engagement.',
+    description: 'Vehicles dealers have published to the shared NxtDealer marketplace.',
   },
   aiReels: {
     label: 'AI Reels',

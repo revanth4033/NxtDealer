@@ -1,3 +1,5 @@
+import { Link } from 'react-router'
+
 import { EntityAvatar } from '@/components/common/entity-avatar'
 import { StatusBadge } from '@/components/common/status-badge'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -19,11 +21,26 @@ interface VehicleCardProps {
   showLocation?: boolean
   /** Show the marketplace status badge on the photo. */
   showStatus?: boolean
+  /** How the publication time reads: "3 days ago" (default) or the calendar date. */
+  publishedDate?: 'relative' | 'date'
+  /** Makes the dealer name a link, e.g. to the dealer's details page. */
+  dealerHref?: string
+  /** Router state sent with the dealer link, e.g. where the dealer page's back link should return. */
+  dealerLinkState?: unknown
   onSelect: (vehicle: MarketplaceVehicle) => void
 }
 
 /** Marketplace vehicle summary. The whole card opens a read-only detail preview. */
-export function VehicleCard({ vehicle, showDealer = true, showLocation = false, showStatus = false, onSelect }: VehicleCardProps) {
+export function VehicleCard({
+  vehicle,
+  showDealer = true,
+  showLocation = false,
+  showStatus = false,
+  publishedDate = 'relative',
+  dealerHref,
+  dealerLinkState,
+  onSelect,
+}: VehicleCardProps) {
   const { specs } = vehicle
 
   return (
@@ -73,7 +90,17 @@ export function VehicleCard({ vehicle, showDealer = true, showLocation = false, 
           <>
             <EntityAvatar name={vehicle.dealerName} size="sm" />
             <span className="min-w-0 flex-1 leading-tight">
-              <span className="block truncate text-caption font-medium text-foreground-secondary">{vehicle.dealerName}</span>
+              {dealerHref ? (
+                <Link
+                  to={dealerHref}
+                  state={dealerLinkState}
+                  className="block truncate rounded-sm text-caption font-medium text-foreground-secondary outline-none hover:text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring/40"
+                >
+                  {vehicle.dealerName}
+                </Link>
+              ) : (
+                <span className="block truncate text-caption font-medium text-foreground-secondary">{vehicle.dealerName}</span>
+              )}
               {showLocation && <span className="block truncate text-caption text-muted-foreground">{vehicle.city}</span>}
             </span>
           </>
@@ -83,9 +110,16 @@ export function VehicleCard({ vehicle, showDealer = true, showLocation = false, 
         <time
           dateTime={vehicle.marketplace.publishedAt}
           title={`Published ${formatDate(vehicle.marketplace.publishedAt)}`}
-          className="shrink-0 text-caption text-muted-foreground"
+          className="shrink-0 text-caption text-muted-foreground tabular-nums"
         >
-          {formatRelative(vehicle.marketplace.publishedAt)}
+          {publishedDate === 'date' ? (
+            <>
+              <span className="sr-only">Published </span>
+              {formatDate(vehicle.marketplace.publishedAt)}
+            </>
+          ) : (
+            formatRelative(vehicle.marketplace.publishedAt)
+          )}
         </time>
       </footer>
     </article>

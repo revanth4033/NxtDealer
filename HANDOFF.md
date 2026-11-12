@@ -13,12 +13,12 @@ disagree, trust the code and update this document.
 
 | | |
 |---|---|
-| Last commit | `dc56245`: `docs: add project handoff document` (12 Nov 2026), on top of `843c9c3`: `feat(dealers): complete dealer detail page` (11 Nov 2026) |
-| Remote | All commits up to `dc56245` are on GitHub `origin/main` (`https://github.com/revanth4033/NxtDealer.git`). This push was a one-off manual experiment by the product owner; normally Claude Code pushes when instructed (§9.1) |
-| Working tree | Clean, apart from the untracked local `.claude/` folder (Claude Code configuration, not project code) |
-| Completed phases | 01, 02, 03, 04A, 04B (all reviewed, approved and committed) |
-| Next phase | **Phase 05: scope not finalised. Wait for instructions before beginning it.** |
-| Checks at last commit | Typecheck, lint and production build all pass |
+| Last commit | `796b7e3`: `docs: update handoff with remote status and 12 Nov session log` (12 Nov 2026). Earlier: `dc56245` (handoff document), `843c9c3` (Phase 04B) |
+| Remote | GitHub `origin/main` (`https://github.com/revanth4033/NxtDealer.git`) is at `796b7e3`, the same as local `main`. Claude Code commits and pushes only when the product owner explicitly instructs it (§9.1) |
+| Working tree | **Phase 05 (Marketplace monitoring) is implemented but not committed**: 05A and 05B are approved; the final refinements are awaiting the product owner's review and commit approval. Also the untracked local `.claude/` folder (Claude Code configuration, not project code) |
+| Completed phases | 01, 02, 03, 04A, 04B (approved and committed). 05A data layer and 05B UI approved, uncommitted |
+| Next step | Product owner reviews the Phase 05 refinements, then gives explicit approval to commit and push. Phase 06 is not scoped |
+| Checks | Typecheck, lint and production build pass on the current working tree (Phase 05 included) |
 | Data source | Mock data only. No backend is connected. |
 
 ---
@@ -92,7 +92,27 @@ them without explicit instruction.
 - Marketplace listings show **dealer attribution and city only**. No branch or showroom attribution until the mobile product supports it.
   (`VehicleCard`'s `showLocation` line is where a showroom name would go later.)
 
-### 2.4 AI reels
+### 2.4 Marketplace monitoring (Phase 05)
+- The Marketplace page shows **published vehicles only**. There is no listing entity: a listing is a `GarageVehicle`
+  with `marketplace.status === 'published'`, and its listing ID is the vehicle ID.
+- `marketplace.publishedAt` exists only on currently published vehicles. **There is no publication history**
+  (no unpublish or republish records), so never show trends, period comparisons or "published per month" charts.
+- KPIs and insights (top dealers, listings by city, listings by make) are **platform-wide** and unaffected by the
+  directory filters. "City" is the dealer's city (`vehicle.city` is copied from `dealer.location.city`); no showroom attribution.
+- Excluded on purpose: publication-date filtering (sorting by publication date is kept), moderation, flagging,
+  publish/unpublish, buyer leads, enquiries, views and any transaction analytics.
+- **Filter semantics** (`MarketplaceFilters`): values within one filter match any of them (OR); different filters must
+  all match (AND). Year and price ranges are inclusive, either side may be blank, and min > max is invalid.
+- **Model filter (approved by the product owner, 12 Nov 2026):** a selected model narrows only its own make.
+  - With makes selected, a vehicle passes if its model is selected, or if none of the selected models belongs to its
+    make. Example: Hyundai › Creta plus Kia shows Hyundai Creta and every Kia.
+  - With no make selected, models filter strictly.
+  - Deselecting a make also removes its selected models; choosing makes drops models that belong to none of them.
+- **Filter counts are faceted:** each filter's option counts apply every other active filter (including search) but
+  not that filter's own selection. Options with 0 are shown but disabled, unless already selected, so they can always
+  be removed.
+
+### 2.5 AI reels
 - Reels are **separate content records** (`AiReel`) that reference a vehicle by `vehicleId`.
 - A vehicle can have **multiple reels**. Always count **reel records**, not unique vehicles
   (`InventoryTotals.aiReels` counts records; `vehiclesWithReels` counts distinct vehicles).
@@ -150,7 +170,12 @@ them without explicit instruction.
 | Dealer / organisation initials | `common/EntityAvatar` (sizes `sm`, `md`, `lg`) |
 | Record lists | `data-table/DataTable` + `createDataTableColumnHelper` (manual sorting, skeleton rows, toolbar/footer slots, optional whole-row click) |
 | Paging | `common/Pagination` (hide it when there are no records) |
-| Search / filters | `common/SearchInput` (debounced), `common/FilterDropdown` (single or multiple) |
+| Search / filters | `common/SearchInput` (debounced), `common/FilterDropdown` (single or multiple; optional option `group` headings, `disabled` options, a disabled trigger and `contentClassName`), `common/RangeFilter` (popover with labelled min/max inputs, inline validation, Apply/Clear) |
+| Filter trigger look | `FilterTrigger` (exported from `common/filter-dropdown.tsx`), shared by FilterDropdown and RangeFilter so active filters look identical |
+| Range parsing | `lib/range.ts`: `NumberRange`, `parseRangeBound` (blank = no limit; whole numbers ≥ 0; digit-group commas allowed), `getRangeError`, `isRangeSet` |
+| Ranked bars | `features/marketplace/components/RankedBarList`: CSS horizontal bars; count and share are always text, the bar is decorative (`aria-hidden`). Neutral bar colour, not pink |
+| Vehicle cards | `features/garage/VehicleCard`: optional `publishedDate="date"` (calendar date instead of "3 days ago"), `dealerHref` + `dealerLinkState` (dealer name as a link) |
+| Mobile touch targets | Marketplace toolbar uses `max-sm:h-11` (44px) on controls and `max-sm:[&_[role^=menuitem]]:min-h-11` on menus; desktop keeps the standard 36px. `RangeFilter` popover controls are 44px below `sm` |
 | View switching | `ui/Tabs`: `line` variant (page level) or `segment` (inside a section) |
 | Empty / no-results / error | `common/EmptyState` (`empty`, `no-results`, `error`) |
 | Loading | Skeletons first; `common/LoadingState` / `Spinner` otherwise |
@@ -219,6 +244,39 @@ Page → feature hook (TanStack Query) → service registry (src/services/index.
   `mock-analytics-service.ts`), never stored.
 - The marketplace service is a **view over garage vehicles** (published ones), not a separate dataset.
 - Query keys are centralised in `src/services/query-keys.ts`.
+- Services reject invalid input with `ApiError.badRequest()` (400), which the query client does not retry.
+
+### 5.1a Marketplace data layer (Phase 05A)
+- `MarketplaceListParams` = `ListParams<'publishedAt' | 'price' | 'year'>` + `MarketplaceFilters`
+  (`src/types/vehicle.ts`): `dealerId` (single-dealer scope for the Dashboard and dealer page, not a directory filter),
+  `search`, `dealerIds`, `cities`, `makes`, `models`, `fuelTypes`, `transmissions`, `yearMin/Max`, `priceMin/Max` (rupees).
+- `MarketplaceService` (`services/contracts/marketplace-service.ts`), all read-only:
+  - `list(params)`: filters (including search) first, then sorts (default `publishedAt desc`) and pages. Inverted or
+    non-numeric ranges → 400.
+  - `getInsights()`: totals (published listings, dealers with listings, cities, makes) and complete rankings by dealer,
+    city and make, highest count first with ties ordered by label. Types in `src/types/marketplace.ts`.
+  - `getFacets(filters)`: total matching, plus faceted counts for dealers, cities, makes, models (with their make),
+    fuel types and transmissions, and year/price bounds for input hints (`null` when nothing is in scope).
+    Every option in scope is returned, including zero counts.
+- Mock implementation: `services/mock/mock-marketplace-service.ts` (`matchesFilters`, `matchesModels` for the model
+  rule in §2.4). Model names are unique across makes in the catalogue, so a model identifies its make.
+  `mock-utils.ts` gained `matchesSearch()`, which `queryCollection()` also uses.
+- Query keys: `queryKeys.marketplace.insights`, `queryKeys.marketplace.facets(filters)`.
+- Hooks (`features/marketplace/hooks/`): `useMarketplaceVehicles` (existing), `useMarketplaceInsights` and
+  `useMarketplaceFacets` (`use-marketplace-insights.ts`), `useMarketplaceState` (URL state), `useDealerReturnState`.
+- **URL state** (`useMarketplaceState`): `?q=`, repeatable `dealer=`, `city=`, `make=`, `model=`, `fuel=`,
+  `transmission=`, then `yearFrom=`, `yearTo=`, `priceMin=`, `priceMax=`, `sort=field:dir`, `page=`, `size=` (12/24/48,
+  default 12) and `view=grid` (default table). Any change to search, filters, ranges, sort or page size resets to page 1.
+  Switching views keeps everything. Unknown values and bad or inverted ranges in a hand-edited URL are ignored, and an
+  out-of-range page snaps to the last page.
+
+### 5.1b Dealer page return navigation (Phase 05)
+- Links into `/dealers/:dealerId` may carry router state `DealerLinkState` (`features/dealers/dealer-link-state.ts`):
+  `directorySearch` (set by the Dealers directory) or `returnTo: { path, label }` (set by the Marketplace through
+  `useDealerReturnState`, the exact filtered Marketplace URL).
+- The dealer page's visible back link follows `returnTo` ("Marketplace"), otherwise the directory ("All dealers", with
+  its filters restored). A direct visit falls back to `/dealers`. The breadcrumb always leads to Dealers.
+  `readDealerLinkState()` validates the state, because it comes from history.
 
 ### 5.2 Principles to keep
 - Pages and components **never import mock data** or call `fetch`. Data goes through feature hooks and services.
@@ -250,10 +308,15 @@ src/
 │   │               reels-overview; hooks/use-dashboard-summary
 │   ├── dealers/    directory (columns, table, summary cards, URL state hook), detail (profile header,
 │   │               activity KPIs, information, showroom), dealer-select, dealer-profile-card,
-│   │               hooks (use-dealers, use-showrooms, use-dealer-directory-state), showrooms.ts
+│   │               hooks (use-dealers, use-showrooms, use-dealer-directory-state), showrooms.ts,
+│   │               dealer-link-state.ts (back-link router state)
 │   ├── garage/     dealer-garage-table, vehicle-card, vehicle-detail-sheet, vehicle-image, vehicle-labels,
 │   │               hooks/use-garage-vehicles
-│   ├── marketplace/ dealer-marketplace-listings, hooks/use-marketplace-vehicles
+│   ├── marketplace/ components: marketplace-kpis, marketplace-insights, ranked-bar-list, recent-listings,
+│   │               marketplace-directory (table/grid), marketplace-toolbar (search, sort, view, filters),
+│   │               marketplace-columns, dealer-marketplace-listings;
+│   │               hooks: use-marketplace-vehicles, use-marketplace-insights (+ facets),
+│   │               use-marketplace-state (URL state), use-dealer-return-state
 │   └── ai-reels/   reel-card, reel-preview-dialog, dealer-reel-gallery, reel-sequence, hooks/use-ai-reels
 ├── hooks/          use-url-state, use-page-meta, use-breadcrumbs, use-route-meta, use-document-title,
 │                   use-current-admin, use-copy-to-clipboard
@@ -261,7 +324,8 @@ src/
 │                   page header/container, user menu), common/ (shared composites), data-table/
 ├── pages/          dashboard, dealers, dealer-details, marketplace, ai-reels, settings, not-found,
 │                   route-error, app-loader, ui-kit/ (dev-only component library)
-└── lib/            utils.ts (cn), format.ts (numbers, ₹ L/Cr prices, km, dates, relative time, shares)
+└── lib/            utils.ts (cn), format.ts (numbers, ₹ L/Cr prices, km, dates, relative time, shares),
+                    range.ts (range-input parsing and validation)
 ```
 
 Other top-level items: `scripts/mock-media/` (photo and reel pipeline), `public/mock-media/` (photos, reels),
@@ -285,17 +349,17 @@ Other top-level items: `scripts/mock-media/` (photo and reel pipeline), `public/
 | `/` | Redirect | To `/dashboard` |
 | `/dashboard` | **Implemented** (Phase 03) | *All dealers* view: KPIs (dealers, garage, marketplace, reels), latest marketplace vehicles, dealer inventory table, latest-reels strip. *Individual dealer* view via a searchable dealer selector (resets when leaving the page): dealer KPIs + profile card, the dealer's marketplace vehicles, garage table, reel gallery. Vehicle detail sheet and reel player. |
 | `/dealers` | **Implemented** (Phase 04A) | Directory: header count, 4 summary cards (Total, Active, Suspended, Dealers with listings), search (name, owner, city), Account status and Plan filters, clear filters, sortable columns, pagination, URL-backed state, empty/no-results/error states, row click opens the dealer. |
-| `/dealers/:dealerId` | **Implemented** (Phase 04B) | Dealer detail: profile header, 4 activity KPIs, dealer information, single showroom card, garage inventory (tabs, search, pagination), marketplace listings, AI reels gallery, vehicle and reel previews, breadcrumb with the dealer's name, back navigation that restores directory state, "Dealer not found" state. |
-| `/marketplace` | **Placeholder** | `ModulePlaceholder` showing the published-vehicle count from the service. Not designed or built. |
+| `/dealers/:dealerId` | **Implemented** (Phase 04B, back link extended in Phase 05) | Dealer detail: profile header, 4 activity KPIs, dealer information, single showroom card, garage inventory (tabs, search, pagination), marketplace listings, AI reels gallery, vehicle and reel previews, breadcrumb with the dealer's name, "Dealer not found" state. The back link returns to the originating page: the Dealers directory with its state restored, or the filtered Marketplace view (§5.1b). |
+| `/marketplace` | **Implemented** (Phase 05, uncommitted) | Header with published count; 4 KPI cards (Published listings 160 with "45% of garage vehicles", Dealers with listings 16 "of 26 registered dealers", Cities 14, Vehicle makes 9 "Most listed: Maruti Suzuki (54)"); insights (top 5 dealers + "View all 16" dialog, listings by make, listings by city; CSS ranked bars); Recently published (latest 6 with calendar dates); All listings directory with search, 8 faceted filters (Dealer, City, Make, Model, Fuel, Transmission, Year from/to, Price min/max), sort menu and sortable headers, Table/Grid switch (9-column table, 3-column card grid), pagination, empty/no-results/error states, vehicle preview and reel player, dealer links. |
 | `/ai-reels` | **Placeholder** | `ModulePlaceholder` with a reel count. Not designed or built. |
 | `/settings` | **Placeholder** | `ModulePlaceholder`. Not designed or built. |
 | `/ui-kit` | **Development only** | Component library (Data display, Inputs and navigation, Status and feedback). Registered only when `import.meta.env.DEV`, excluded from production builds, and **not in the sidebar**. |
 | `*` | Implemented | Not-found page; route errors use `RouteErrorPage`. |
 
-> The placeholder pages list "planned capabilities" written in Phase 01 (for example "Moderation queue",
-> "Flagged content review", "Generation queue status", "Failure diagnostics", "Team & roles"). **These are not approved
-> requirements**, and some conflict with the read-only rule. Confirm the real scope with the product owner before
-> building these modules.
+> The remaining placeholder pages (AI Reels, Settings) list "planned capabilities" written in Phase 01 (for example
+> "Generation queue status", "Failure diagnostics", "Team & roles"). **These are not approved requirements**, and some
+> conflict with the read-only rule. Confirm the real scope with the product owner before building these modules.
+> (The Marketplace placeholder's "Moderation queue" and "Views and lead tracking" were dropped in Phase 05 as out of scope.)
 
 ---
 
@@ -372,12 +436,16 @@ Other top-level items: `scripts/mock-media/` (photo and reel pipeline), `public/
     changing it would alter reel relationships.
 - Some photos show non-Indian-market cars (foreign number plates), and some model generations don't match the listed year.
   This is accepted for mock data.
+- **Marketplace photo reuse (Phase 05, unresolved):** the 160 published vehicles use only 63 distinct cover photos, so
+  the platform-wide directory shows vehicles from different dealers with the same photo. Recently published (6) has no
+  repeats; with the default sort and 12 per page, 8 of 14 directory pages show 1–3 repeated covers. Fixing it needs
+  more same-model, same-colour Commons photos (downloads need the product owner's approval); mock data was not changed.
 
 ---
 
 ## 8. Development phase history
 
-All phases were completed on 11 November 2026.
+Phases 01–04B were completed on 11 November 2026; Phase 05 on 12 November 2026.
 
 ### Phase 01: Project foundation (`0a52108`)
 Vite + React + TypeScript project, Tailwind 4 and shadcn setup, two-layer design tokens, folder architecture, routes
@@ -416,6 +484,31 @@ with independent status scenarios; 10 additional same-model, same-colour photos 
 within dealers went from 27 to 7); a mislabelled XL6 photo (actually a Suzuki XL7) replaced; empty-garage pagination
 hidden; AI reels description updated.
 Typecheck, lint and build passed; visual review approved; committed.
+
+### Phase 05: Marketplace monitoring (12 Nov 2026, approved, not yet committed)
+Worked in controlled steps after a technical discovery report.
+
+**05A, data layer (approved):** `MarketplaceListParams` extended with `MarketplaceFilters`; `MarketplaceService`
+gained `getInsights()` and `getFacets(filters)`; mock filtering applied before sort and pagination; faceted counts;
+`ApiError.badRequest()` for invalid ranges; query keys; `useMarketplaceInsights`, `useMarketplaceFacets` and
+`useMarketplaceState` (URL state). Validated by an independent script against the raw records (§10).
+
+**05B, UI (approved):** the Marketplace page described in §6, built from existing components:
+- StatCard, DataTable, Pagination, SearchInput, FilterDropdown, EmptyState, VehicleCard, VehicleDetailSheet,
+  ReelPreviewDialog
+- new RankedBarList, RangeFilter and FilterTrigger
+
+Decisions made during review:
+- The model filter narrows only its own make (§2.4). The original strict AND rule disabled every other make once a
+  model was selected.
+- Ranked bars use a neutral grey; pink stays for actions, selection and Published badges.
+- The table's Vehicle cell shows the model over the make, so nine columns fit at 1440px.
+- The directory grid uses 3 columns so dealer names aren't cut off next to full dates.
+- The Marketplace nav description no longer mentions moderation or buyer engagement.
+
+**Refinements (awaiting final review):**
+- 44px mobile touch targets on toolbar controls, menu items and range-popover controls (desktop unchanged at 36px).
+- The dealer page's back link returns to the originating Marketplace view (§5.1b); Dealers directory behaviour unchanged.
 
 ---
 
@@ -459,8 +552,18 @@ current one. Phase briefs typically end with "stop and wait for my review"; resp
 ## 10. Known gaps, unverified items and documentation drift
 
 - **Not implemented:** authentication (Sign out is disabled), real API services (`services/http` has only the client),
-  Marketplace / AI Reels / Settings modules (placeholders), charts (Recharts installed but unused), automated tests,
-  dark theme.
+  AI Reels / Settings modules (placeholders), charts (Recharts installed but unused; Marketplace bars are CSS),
+  automated tests, dark theme.
+- **Marketplace (Phase 05) known limitations:**
+  - Cover-photo reuse across dealers (§7.5).
+  - On phones the 9-column table scrolls sideways inside its card, as on Dealers; the grid view suits phones better.
+  - Pagination buttons stay 32px.
+  - Sort has no secondary key for ties, so a real backend needs one (the mock keeps a stable order).
+  - A real API must confirm whether a listing's city is stored per vehicle or per dealer.
+- **Phase 05 verification script is not in the repository:** it lived in a Claude Code session scratchpad.
+  It compared `list` / `getInsights` / `getFacets` with brute-force counts over `mockVehicles` (incl. 300 randomised
+  filter combinations, the model rule and URL parsing). Recreate it if regression checks are needed; there is no
+  test framework.
 - **Unverified against the real product** (mock assumptions from Phase 01; confirm before relying on them):
   subscription plan values `free | growth | pro`; admin roles `super_admin | operations | support | viewer`;
   dealer fields `email`, `phone`, `lastActiveAt`; vehicle spec fields; reel duration (6 s mock videos); the "planned
@@ -482,12 +585,13 @@ current one. Phase briefs typically end with "stop and wait for my review"; resp
 | Phase 03: Dashboard | Complete |
 | Phase 04A: Dealers directory | Complete |
 | Phase 04B: Dealer detail page | Complete |
-| Phase 05 onwards | Not started |
+| Phase 05: Marketplace monitoring (05A data layer, 05B UI) | Implemented and approved; refinements awaiting final review; not yet committed |
+| Phase 06 onwards | Not scoped |
 
-**The scope of Phase 05 has not yet been finalised. Wait for instructions before beginning it.**
+**Phase 06 has not been scoped. Wait for instructions before beginning it.**
 
-Future work may include building the remaining admin modules (Marketplace, AI Reels, Settings) and preparing for
-backend integration (HTTP service implementations), but **none of these are approved implementation tasks yet.**
+Future work may include the remaining admin modules (AI Reels, Settings) and backend integration (HTTP service
+implementations), but **none of these are approved implementation tasks yet.**
 
 ---
 
@@ -521,6 +625,36 @@ Add a new dated entry for each session; don't overwrite earlier entries.
 - The handoff document is committed and available in the remote repository.
 - No application code, mock data or architecture changes.
 - Phase 05 has not started; waiting for the product owner's brief.
+
+### 12 November 2026 (Phase 05: Marketplace monitoring)
+- Handoff update committed and pushed by Claude Code as `796b7e3`.
+- Technical discovery report for the Marketplace (inspection only), then the finalised Phase 05 scope.
+- **05A data layer** implemented and approved. An independent check found **4,290 assertions passing**, covering:
+  - 300 randomised filter combinations
+  - insights totals and rankings
+  - faceted counts
+  - range validation
+  - the model rule and URL parsing
+- **05B UI** implemented and approved, including the revised model-filter behaviour.
+- **Refinements:** 44px mobile touch targets, and the dealer back link returning to the originating Marketplace view.
+- **Browser verification** (1440px and 390px, same-origin iframe):
+  - the URL resets the page on every change
+  - adding Kia to Hyundai › Creta + i20 gives 42, and removing Hyundai leaves Kia 20
+  - range errors are shown inline
+  - zero-count selected options stay removable
+  - Clear filters returns all 160
+  - table and grid show identical rows
+  - header sort cycles desc → asc → default
+  - previews, reels, dealer links and Back all work, and `?page=99` snaps back
+  - Dashboard and dealer detail pages are unchanged, with no console errors
+- **Data:** KPI and insight values match the raw records: 160 / 16 / 14 / 9 and garage 353. Top 5: Capital Car
+  Bazaar 22, Sai Krishna Motors 18, Eastern Motor Point 15, Garden City Wheels 12, Speedway Autos 12.
+- **Mock data unchanged:** `src/mocks`, `public` and `scripts` untouched; fingerprints `54bfedbb34a61495` (reels) and
+  `be9082c113569963` (vehicles without photos) match.
+- **Checks:** typecheck, lint and production build pass.
+- **Screenshots:** `~/Downloads/Revanth/NxtDealer-screenshots/phase-05b/` (01–17).
+- **Git status at the time of writing:** Phase 05 changes uncommitted on `main` (last commit `796b7e3`), awaiting the
+  product owner's explicit approval to commit and push.
 
 ---
 

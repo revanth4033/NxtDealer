@@ -19,6 +19,10 @@ export class ApiError extends Error implements ApiErrorShape {
   static notFound(entity: string, id: string): ApiError {
     return new ApiError({ status: 404, code: 'not_found', message: `${entity} "${id}" was not found.` })
   }
+
+  static badRequest(message: string): ApiError {
+    return new ApiError({ status: 400, code: 'bad_request', message })
+  }
 }
 
 export function isApiError(error: unknown): error is ApiError {

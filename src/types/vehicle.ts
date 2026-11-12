@@ -68,6 +68,31 @@ export interface GarageListParams extends ListParams<GarageSortField> {
 
 export type MarketplaceSortField = 'publishedAt' | 'price' | 'year'
 
-export interface MarketplaceListParams extends ListParams<MarketplaceSortField> {
+/**
+ * Marketplace directory filters. Values within one filter match any of them (OR); different filters
+ * all have to match (AND). Omitted or empty means no restriction. Range bounds are inclusive and either
+ * side may be omitted; a minimum above its maximum is rejected by the service.
+ */
+export interface MarketplaceFilters {
+  /** Restricts to one dealer's listings (dashboard and dealer details). Not a directory filter. */
   dealerId?: EntityId
+  /** Searches make, model, variant, dealer name, city and colour. */
+  search?: string
+  dealerIds?: EntityId[]
+  cities?: string[]
+  makes?: string[]
+  /**
+   * Model names. Models refine their own make: a selected make with none of its models selected keeps
+   * all of them. With no make selected, only the selected models match.
+   */
+  models?: string[]
+  fuelTypes?: FuelType[]
+  transmissions?: Transmission[]
+  yearMin?: number
+  yearMax?: number
+  /** Asking price in rupees. */
+  priceMin?: number
+  priceMax?: number
 }
+
+export interface MarketplaceListParams extends ListParams<MarketplaceSortField>, MarketplaceFilters {}

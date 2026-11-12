@@ -13,6 +13,12 @@ export function clone<T>(value: T): T {
   return structuredClone(value)
 }
 
+/** Case-insensitive substring match on any field. An empty or blank term matches everything. */
+export function matchesSearch<T>(item: T, search: string | undefined, fields: ((item: T) => string)[]): boolean {
+  const term = search?.trim().toLowerCase()
+  return !term || fields.some((field) => field(item).toLowerCase().includes(term))
+}
+
 /** Applies search, sort and pagination in memory, mirroring what the API will do server-side. */
 export function queryCollection<T, TSort extends string>(
   items: readonly T[],
@@ -24,14 +30,7 @@ export function queryCollection<T, TSort extends string>(
 ): PaginatedResponse<T> {
   const { page = 1, pageSize = DEFAULT_PAGE_SIZE, search, sortBy, sortDirection = 'asc' } = params
 
-  let result = [...items]
-
-  const term = search?.trim().toLowerCase()
-  if (term) {
-    result = result.filter((item) =>
-      options.searchFields.some((field) => field(item).toLowerCase().includes(term)),
-    )
-  }
+  const result = items.filter((item) => matchesSearch(item, search, options.searchFields))
 
   if (sortBy) {
     const accessor = options.sortAccessors[sortBy]
