@@ -13,8 +13,9 @@ disagree, trust the code and update this document.
 
 | | |
 |---|---|
-| Last commit | `843c9c3`: `feat(dealers): complete dealer detail page` (11 Nov 2026) |
-| Working tree | Clean at the time of writing, apart from this new, uncommitted `HANDOFF.md` |
+| Last commit | `dc56245`: `docs: add project handoff document` (12 Nov 2026), on top of `843c9c3`: `feat(dealers): complete dealer detail page` (11 Nov 2026) |
+| Remote | All commits up to `dc56245` are on GitHub `origin/main` (`https://github.com/revanth4033/NxtDealer.git`). This push was a one-off manual experiment by the product owner; normally Claude Code pushes when instructed (§9.1) |
+| Working tree | Clean, apart from the untracked local `.claude/` folder (Claude Code configuration, not project code) |
 | Completed phases | 01, 02, 03, 04A, 04B (all reviewed, approved and committed) |
 | Next phase | **Phase 05: scope not finalised. Wait for instructions before beginning it.** |
 | Checks at last commit | Typecheck, lint and production build all pass |
@@ -433,7 +434,8 @@ Typecheck, lint and build passed; visual review approved; committed.
 9. Validate in the browser (1440px desktop, about 390px mobile) and verify numbers against raw mock records.
 10. Give a clear completion report: what changed, checks run, assumptions, and missing or unverified data.
 11. Share screenshots for visual review.
-12. **Wait for approval before committing**, unless explicitly told to commit.
+12. **Wait for approval before committing**, unless explicitly told to commit. Claude Code commits and pushes to
+    GitHub only when the product owner explicitly instructs it.
 13. Update this `HANDOFF.md` at the end of each completed phase or significant session (add a dated log entry).
 
 ### 9.2 Working style
@@ -508,6 +510,17 @@ Add a new dated entry for each session; don't overwrite earlier entries.
 - Confirmed a clean Git working tree.
 - Created this `HANDOFF.md` (not yet committed).
 - Paused development before Phase 05.
+
+### 12 November 2026
+- `HANDOFF.md` committed as `dc56245` (`docs: add project handoff document`).
+- The product owner manually pushed all commits to the GitHub `main` branch. This was an experiment, not a
+  workflow change: Claude Code normally commits and pushes when explicitly instructed.
+- A fresh Claude Code session resumed the project successfully using `HANDOFF.md`.
+- Verified the repository history (`0a52108` → `5b69f59` → `7b7e6ca` → `71863ff` → `843c9c3` → `dc56245`) and confirmed
+  that GitHub `origin/main` points to `dc56245`, the same as local `HEAD`.
+- The handoff document is committed and available in the remote repository.
+- No application code, mock data or architecture changes.
+- Phase 05 has not started; waiting for the product owner's brief.
 
 ---
 
